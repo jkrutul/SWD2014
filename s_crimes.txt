@@ -1,0 +1,426 @@
+West Virginia,Violent Crime,Robbery,1999,661
+West Virginia,Violent Crime,Robbery,2000,749
+West Virginia,Violent Crime,Robbery,2001,707
+West Virginia,Violent Crime,Robbery,2002,657
+West Virginia,Violent Crime,Robbery,2003,701
+West Virginia,Violent Crime,Robbery,2004,774
+West Virginia,Violent Crime,Robbery,2005,811
+West Virginia,Violent Crime,Aggravated assault,1960,803
+West Virginia,Violent Crime,Aggravated assault,1961,788
+West Virginia,Violent Crime,Aggravated assault,1962,732
+West Virginia,Violent Crime,Aggravated assault,1963,756
+West Virginia,Violent Crime,Aggravated assault,1964,900
+West Virginia,Violent Crime,Aggravated assault,1965,1003
+West Virginia,Violent Crime,Aggravated assault,1966,1104
+West Virginia,Violent Crime,Aggravated assault,1967,1229
+West Virginia,Violent Crime,Aggravated assault,1968,1321
+West Virginia,Violent Crime,Aggravated assault,1969,1224
+West Virginia,Violent Crime,Aggravated assault,1970,1457
+West Virginia,Violent Crime,Aggravated assault,1971,1491
+West Virginia,Violent Crime,Aggravated assault,1972,1482
+West Virginia,Violent Crime,Aggravated assault,1973,1449
+West Virginia,Violent Crime,Aggravated assault,1974,1542
+West Virginia,Violent Crime,Aggravated assault,1975,1794
+West Virginia,Violent Crime,Aggravated assault,1976,1759
+West Virginia,Violent Crime,Aggravated assault,1977,1690
+West Virginia,Violent Crime,Aggravated assault,1978,1858
+West Virginia,Violent Crime,Aggravated assault,1979,1912
+West Virginia,Violent Crime,Aggravated assault,1980,2167
+West Virginia,Violent Crime,Aggravated assault,1981,2024
+West Virginia,Violent Crime,Aggravated assault,1982,2031
+West Virginia,Violent Crime,Aggravated assault,1983,2147
+West Virginia,Violent Crime,Aggravated assault,1984,2148
+West Virginia,Violent Crime,Aggravated assault,1985,2054
+West Virginia,Violent Crime,Aggravated assault,1986,1893
+West Virginia,Violent Crime,Aggravated assault,1987,1493
+West Virginia,Violent Crime,Aggravated assault,1988,1386
+West Virginia,Violent Crime,Aggravated assault,1989,1463
+West Virginia,Violent Crime,Aggravated assault,1990,1831
+West Virginia,Violent Crime,Aggravated assault,1991,2135
+West Virginia,Violent Crime,Aggravated assault,1992,2537
+West Virginia,Violent Crime,Aggravated assault,1993,2520
+West Virginia,Violent Crime,Aggravated assault,1994,2690
+West Virginia,Violent Crime,Aggravated assault,1995,2584
+West Virginia,Violent Crime,Aggravated assault,1996,2672
+West Virginia,Violent Crime,Aggravated assault,1997,2759
+West Virginia,Violent Crime,Aggravated assault,1998,3410
+West Virginia,Violent Crime,Aggravated assault,1999,5259
+West Virginia,Violent Crime,Aggravated assault,2000,4597
+West Virginia,Violent Crime,Aggravated assault,2001,3968
+West Virginia,Violent Crime,Aggravated assault,2002,3179
+West Virginia,Violent Crime,Aggravated assault,2003,3542
+West Virginia,Violent Crime,Aggravated assault,2004,3922
+West Virginia,Violent Crime,Aggravated assault,2005,3745
+West Virginia,Property Crime,Burglary,1960,4358
+West Virginia,Property Crime,Burglary,1961,4396
+West Virginia,Property Crime,Burglary,1962,3837
+West Virginia,Property Crime,Burglary,1963,4023
+West Virginia,Property Crime,Burglary,1964,4818
+West Virginia,Property Crime,Burglary,1965,4600
+West Virginia,Property Crime,Burglary,1966,4651
+West Virginia,Property Crime,Burglary,1967,5365
+West Virginia,Property Crime,Burglary,1968,6313
+West Virginia,Property Crime,Burglary,1969,5870
+West Virginia,Property Crime,Burglary,1970,6777
+West Virginia,Property Crime,Burglary,1971,6792
+West Virginia,Property Crime,Burglary,1972,7356
+West Virginia,Property Crime,Burglary,1973,7459
+West Virginia,Property Crime,Burglary,1974,9883
+West Virginia,Property Crime,Burglary,1975,10656
+West Virginia,Property Crime,Burglary,1976,10437
+West Virginia,Property Crime,Burglary,1977,11106
+West Virginia,Property Crime,Burglary,1978,12059
+West Virginia,Property Crime,Burglary,1979,11959
+West Virginia,Property Crime,Burglary,1980,14258
+West Virginia,Property Crime,Burglary,1981,15122
+West Virginia,Property Crime,Burglary,1982,13985
+West Virginia,Property Crime,Burglary,1983,13455
+West Virginia,Property Crime,Burglary,1984,12649
+West Virginia,Property Crime,Burglary,1985,11972
+West Virginia,Property Crime,Burglary,1986,11999
+West Virginia,Property Crime,Burglary,1987,11450
+West Virginia,Property Crime,Burglary,1988,11510
+West Virginia,Property Crime,Burglary,1989,11635
+West Virginia,Property Crime,Burglary,1990,11785
+West Virginia,Property Crime,Burglary,1991,12009
+West Virginia,Property Crime,Burglary,1992,11287
+West Virginia,Property Crime,Burglary,1993,10904
+West Virginia,Property Crime,Burglary,1994,10673
+West Virginia,Property Crime,Burglary,1995,10329
+West Virginia,Property Crime,Burglary,1996,9979
+West Virginia,Property Crime,Burglary,1997,10647
+West Virginia,Property Crime,Burglary,1998,11110
+West Virginia,Property Crime,Burglary,1999,10303
+West Virginia,Property Crime,Burglary,2000,9890
+West Virginia,Property Crime,Burglary,2001,9601
+West Virginia,Property Crime,Burglary,2002,9677
+West Virginia,Property Crime,Burglary,2003,10498
+West Virginia,Property Crime,Burglary,2004,10994
+West Virginia,Property Crime,Burglary,2005,11286
+West Virginia,Property Crime,Larceny-theft,1960,6558
+West Virginia,Property Crime,Larceny-theft,1961,5426
+West Virginia,Property Crime,Larceny-theft,1962,6996
+West Virginia,Property Crime,Larceny-theft,1963,7164
+West Virginia,Property Crime,Larceny-theft,1964,7375
+West Virginia,Property Crime,Larceny-theft,1965,7577
+West Virginia,Property Crime,Larceny-theft,1966,9146
+West Virginia,Property Crime,Larceny-theft,1967,9745
+West Virginia,Property Crime,Larceny-theft,1968,11096
+West Virginia,Property Crime,Larceny-theft,1969,10906
+West Virginia,Property Crime,Larceny-theft,1970,13497
+West Virginia,Property Crime,Larceny-theft,1971,13507
+West Virginia,Property Crime,Larceny-theft,1972,13976
+West Virginia,Property Crime,Larceny-theft,1973,14799
+West Virginia,Property Crime,Larceny-theft,1974,17074
+West Virginia,Property Crime,Larceny-theft,1975,22154
+West Virginia,Property Crime,Larceny-theft,1976,26568
+West Virginia,Property Crime,Larceny-theft,1977,24942
+West Virginia,Property Crime,Larceny-theft,1978,23776
+West Virginia,Property Crime,Larceny-theft,1979,24755
+West Virginia,Property Crime,Larceny-theft,1980,27606
+West Virginia,Property Crime,Larceny-theft,1981,28884
+West Virginia,Property Crime,Larceny-theft,1982,27962
+West Virginia,Property Crime,Larceny-theft,1983,27134
+West Virginia,Property Crime,Larceny-theft,1984,26296
+West Virginia,Property Crime,Larceny-theft,1985,25191
+West Virginia,Property Crime,Larceny-theft,1986,26055
+West Virginia,Property Crime,Larceny-theft,1987,24436
+West Virginia,Property Crime,Larceny-theft,1988,25147
+West Virginia,Property Crime,Larceny-theft,1989,26608
+West Virginia,Property Crime,Larceny-theft,1990,27310
+West Virginia,Property Crime,Larceny-theft,1991,29369
+West Virginia,Property Crime,Larceny-theft,1992,29200
+West Virginia,Property Crime,Larceny-theft,1993,28456
+West Virginia,Property Crime,Larceny-theft,1994,28189
+West Virginia,Property Crime,Larceny-theft,1995,27724
+West Virginia,Property Crime,Larceny-theft,1996,28300
+West Virginia,Property Crime,Larceny-theft,1997,26934
+West Virginia,Property Crime,Larceny-theft,1998,27127
+West Virginia,Property Crime,Larceny-theft,1999,28760
+West Virginia,Property Crime,Larceny-theft,2000,28139
+West Virginia,Property Crime,Larceny-theft,2001,28268
+West Virginia,Property Crime,Larceny-theft,2002,27524
+West Virginia,Property Crime,Larceny-theft,2003,28409
+West Virginia,Property Crime,Larceny-theft,2004,31566
+West Virginia,Property Crime,Larceny-theft,2005,32594
+West Virginia,Property Crime,Motor vehicle theft,1960,1292
+West Virginia,Property Crime,Motor vehicle theft,1961,1263
+West Virginia,Property Crime,Motor vehicle theft,1962,1264
+West Virginia,Property Crime,Motor vehicle theft,1963,1316
+West Virginia,Property Crime,Motor vehicle theft,1964,1410
+West Virginia,Property Crime,Motor vehicle theft,1965,1258
+West Virginia,Property Crime,Motor vehicle theft,1966,1391
+West Virginia,Property Crime,Motor vehicle theft,1967,1571
+West Virginia,Property Crime,Motor vehicle theft,1968,1660
+West Virginia,Property Crime,Motor vehicle theft,1969,1554
+West Virginia,Property Crime,Motor vehicle theft,1970,1612
+West Virginia,Property Crime,Motor vehicle theft,1971,1942
+West Virginia,Property Crime,Motor vehicle theft,1972,1953
+West Virginia,Property Crime,Motor vehicle theft,1973,1922
+West Virginia,Property Crime,Motor vehicle theft,1974,2272
+West Virginia,Property Crime,Motor vehicle theft,1975,2279
+West Virginia,Property Crime,Motor vehicle theft,1976,2475
+West Virginia,Property Crime,Motor vehicle theft,1977,3035
+West Virginia,Property Crime,Motor vehicle theft,1978,3269
+West Virginia,Property Crime,Motor vehicle theft,1979,3799
+West Virginia,Property Crime,Motor vehicle theft,1980,3855
+West Virginia,Property Crime,Motor vehicle theft,1981,3675
+West Virginia,Property Crime,Motor vehicle theft,1982,3567
+West Virginia,Property Crime,Motor vehicle theft,1983,3569
+West Virginia,Property Crime,Motor vehicle theft,1984,3368
+West Virginia,Property Crime,Motor vehicle theft,1985,3238
+West Virginia,Property Crime,Motor vehicle theft,1986,3247
+West Virginia,Property Crime,Motor vehicle theft,1987,3067
+West Virginia,Property Crime,Motor vehicle theft,1988,3046
+West Virginia,Property Crime,Motor vehicle theft,1989,2911
+West Virginia,Property Crime,Motor vehicle theft,1990,2760
+West Virginia,Property Crime,Motor vehicle theft,1991,3150
+West Virginia,Property Crime,Motor vehicle theft,1992,2968
+West Virginia,Property Crime,Motor vehicle theft,1993,2940
+West Virginia,Property Crime,Motor vehicle theft,1994,3274
+West Virginia,Property Crime,Motor vehicle theft,1995,3040
+West Virginia,Property Crime,Motor vehicle theft,1996,3231
+West Virginia,Property Crime,Motor vehicle theft,1997,3287
+West Virginia,Property Crime,Motor vehicle theft,1998,3390
+West Virginia,Property Crime,Motor vehicle theft,1999,3762
+West Virginia,Property Crime,Motor vehicle theft,2000,3315
+West Virginia,Property Crime,Motor vehicle theft,2001,3216
+West Virginia,Property Crime,Motor vehicle theft,2002,3898
+West Virginia,Property Crime,Motor vehicle theft,2003,3463
+West Virginia,Property Crime,Motor vehicle theft,2004,3766
+West Virginia,Property Crime,Motor vehicle theft,2005,3816
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1960,50
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1961,63
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1962,37
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1963,70
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1964,60
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1965,64
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1966,80
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1967,80
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1968,92
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1969,87
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1970,88
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1971,126
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1972,126
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1973,119
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1974,138
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1975,150
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1976,140
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1977,130
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1978,118
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1979,160
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1980,136
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1981,161
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1982,148
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1983,131
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1984,117
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1985,135
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1986,149
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1987,168
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1988,144
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1989,176
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1990,225
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1991,239
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1992,218
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1993,222
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1994,227
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1995,219
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1996,204
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1997,205
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1998,190
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,1999,179
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,2000,169
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,2001,192
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,2002,154
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,2003,183
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,2004,154
+Wisconsin,Violent Crime,Murder and nonnegligent Manslaughter,2005,194
+Wisconsin,Violent Crime,Forcible rape,1960,109
+Wisconsin,Violent Crime,Forcible rape,1961,101
+Wisconsin,Violent Crime,Forcible rape,1962,98
+Wisconsin,Violent Crime,Forcible rape,1963,115
+Wisconsin,Violent Crime,Forcible rape,1964,124
+Wisconsin,Violent Crime,Forcible rape,1965,149
+Wisconsin,Violent Crime,Forcible rape,1966,151
+Wisconsin,Violent Crime,Forcible rape,1967,194
+Wisconsin,Violent Crime,Forcible rape,1968,262
+Wisconsin,Violent Crime,Forcible rape,1969,305
+Wisconsin,Violent Crime,Forcible rape,1970,296
+Wisconsin,Violent Crime,Forcible rape,1971,341
+Wisconsin,Violent Crime,Forcible rape,1972,376
+Wisconsin,Violent Crime,Forcible rape,1973,492
+Wisconsin,Violent Crime,Forcible rape,1974,514
+Wisconsin,Violent Crime,Forcible rape,1975,490
+Wisconsin,Violent Crime,Forcible rape,1976,542
+Wisconsin,Violent Crime,Forcible rape,1977,600
+Wisconsin,Violent Crime,Forcible rape,1978,677
+Wisconsin,Violent Crime,Forcible rape,1979,758
+Wisconsin,Violent Crime,Forcible rape,1980,697
+Wisconsin,Violent Crime,Forcible rape,1981,745
+Wisconsin,Violent Crime,Forcible rape,1982,680
+Wisconsin,Violent Crime,Forcible rape,1983,861
+Wisconsin,Violent Crime,Forcible rape,1984,790
+Wisconsin,Violent Crime,Forcible rape,1985,875
+Wisconsin,Violent Crime,Forcible rape,1986,961
+Wisconsin,Violent Crime,Forcible rape,1987,954
+Wisconsin,Violent Crime,Forcible rape,1988,965
+Wisconsin,Violent Crime,Forcible rape,1989,993
+Wisconsin,Violent Crime,Forcible rape,1990,1013
+Wisconsin,Violent Crime,Forcible rape,1991,1259
+Wisconsin,Violent Crime,Forcible rape,1992,1315
+Wisconsin,Violent Crime,Forcible rape,1993,1269
+Wisconsin,Violent Crime,Forcible rape,1994,1192
+Wisconsin,Violent Crime,Forcible rape,1995,1194
+Wisconsin,Violent Crime,Forcible rape,1996,1086
+Wisconsin,Violent Crime,Forcible rape,1997,1048
+Wisconsin,Violent Crime,Forcible rape,1998,1037
+Wisconsin,Violent Crime,Forcible rape,1999,1055
+Wisconsin,Violent Crime,Forcible rape,2000,1165
+Wisconsin,Violent Crime,Forcible rape,2001,1142
+Wisconsin,Violent Crime,Forcible rape,2002,1237
+Wisconsin,Violent Crime,Forcible rape,2003,1202
+Wisconsin,Violent Crime,Forcible rape,2004,1136
+Wisconsin,Violent Crime,Forcible rape,2005,1142
+Wisconsin,Violent Crime,Robbery,1960,327
+Wisconsin,Violent Crime,Robbery,1961,361
+Wisconsin,Violent Crime,Robbery,1962,348
+Wisconsin,Violent Crime,Robbery,1963,393
+Wisconsin,Violent Crime,Robbery,1964,451
+Wisconsin,Violent Crime,Robbery,1965,475
+Wisconsin,Violent Crime,Robbery,1966,537
+Wisconsin,Violent Crime,Robbery,1967,1171
+Wisconsin,Violent Crime,Robbery,1968,1394
+Wisconsin,Violent Crime,Robbery,1969,1196
+Wisconsin,Violent Crime,Robbery,1970,1462
+Wisconsin,Violent Crime,Robbery,1971,1411
+Wisconsin,Violent Crime,Robbery,1972,1661
+Wisconsin,Violent Crime,Robbery,1973,2226
+Wisconsin,Violent Crime,Robbery,1974,3025
+Wisconsin,Violent Crime,Robbery,1975,3381
+Wisconsin,Violent Crime,Aggravated assault,1990,6196
+Wisconsin,Violent Crime,Aggravated assault,1991,6330
+Wisconsin,Violent Crime,Aggravated assault,1992,6276
+Wisconsin,Violent Crime,Aggravated assault,1993,6116
+Wisconsin,Violent Crime,Aggravated assault,1994,6590
+Wisconsin,Violent Crime,Aggravated assault,1995,7602
+Wisconsin,Violent Crime,Aggravated assault,1996,6767
+Wisconsin,Violent Crime,Aggravated assault,1997,7521
+Wisconsin,Violent Crime,Aggravated assault,1998,7308
+Wisconsin,Violent Crime,Aggravated assault,1999,7225
+Wisconsin,Violent Crime,Aggravated assault,2000,6829
+Wisconsin,Violent Crime,Aggravated assault,2001,6708
+Wisconsin,Violent Crime,Aggravated assault,2002,6134
+Wisconsin,Violent Crime,Aggravated assault,2003,6322
+Wisconsin,Violent Crime,Aggravated assault,2004,6191
+Wisconsin,Violent Crime,Aggravated assault,2005,7485
+Wisconsin,Property Crime,Burglary,1960,7847
+Wisconsin,Property Crime,Burglary,1961,9021
+Wisconsin,Property Crime,Burglary,1962,8757
+Wisconsin,Property Crime,Burglary,1963,9584
+Wisconsin,Property Crime,Burglary,1964,11725
+Wisconsin,Property Crime,Burglary,1965,11871
+Wisconsin,Property Crime,Burglary,1966,14346
+Wisconsin,Property Crime,Burglary,1967,18862
+Wisconsin,Property Crime,Burglary,1968,21225
+Wisconsin,Property Crime,Burglary,1969,21101
+Wisconsin,Property Crime,Burglary,1970,23792
+Wisconsin,Property Crime,Burglary,1971,28172
+Wisconsin,Property Crime,Burglary,1972,28862
+Wisconsin,Property Crime,Burglary,1973,32467
+Wisconsin,Property Crime,Burglary,1974,38212
+Wisconsin,Property Crime,Burglary,1975,42317
+Wisconsin,Property Crime,Burglary,1976,38891
+Wisconsin,Property Crime,Burglary,1977,39390
+Wisconsin,Property Crime,Burglary,1978,39599
+Wisconsin,Property Crime,Burglary,1979,44806
+Wisconsin,Property Crime,Burglary,1980,50524
+Wisconsin,Property Crime,Burglary,1981,50813
+Wisconsin,Property Crime,Burglary,1982,46564
+Wisconsin,Property Crime,Burglary,1983,41980
+Wisconsin,Property Crime,Burglary,1984,39755
+Wisconsin,Property Crime,Burglary,1985,37987
+Wisconsin,Property Crime,Burglary,1986,37464
+Wisconsin,Property Crime,Burglary,1987,40502
+Wisconsin,Property Crime,Burglary,1988,35423
+Wisconsin,Property Crime,Burglary,1989,35683
+Wisconsin,Property Crime,Burglary,1990,36755
+Wisconsin,Property Crime,Burglary,1991,37241
+Wisconsin,Property Crime,Burglary,1992,34645
+Wisconsin,Property Crime,Burglary,1993,33400
+Wisconsin,Property Crime,Burglary,1994,32824
+Wisconsin,Property Crime,Burglary,1995,31416
+Wisconsin,Property Crime,Burglary,1996,30356
+Wisconsin,Property Crime,Burglary,1997,29503
+Wisconsin,Property Crime,Burglary,1998,29740
+Wisconsin,Property Crime,Burglary,1999,25633
+Wisconsin,Property Crime,Burglary,2000,25183
+Wisconsin,Property Crime,Burglary,2001,26927
+Wisconsin,Property Crime,Burglary,2002,27926
+Wisconsin,Property Crime,Burglary,2003,26546
+Wisconsin,Property Crime,Burglary,2004,23854
+Wisconsin,Property Crime,Burglary,2005,24406
+Wisconsin,Property Crime,Larceny-theft,1960,32035
+Wisconsin,Property Crime,Larceny-theft,1961,34197
+Wisconsin,Property Crime,Larceny-theft,1962,34041
+Wisconsin,Property Crime,Larceny-theft,1963,38919
+Wisconsin,Property Crime,Larceny-theft,1989,140040
+Wisconsin,Property Crime,Larceny-theft,1990,144924
+Wisconsin,Property Crime,Larceny-theft,1991,148695
+Wisconsin,Property Crime,Larceny-theft,1992,146198
+Wisconsin,Property Crime,Larceny-theft,1993,139148
+Wisconsin,Property Crime,Larceny-theft,1994,135559
+Wisconsin,Property Crime,Larceny-theft,1995,134623
+Wisconsin,Property Crime,Larceny-theft,1996,135941
+Wisconsin,Property Crime,Larceny-theft,1997,131002
+Wisconsin,Property Crime,Larceny-theft,1998,128134
+Wisconsin,Property Crime,Larceny-theft,1999,120702
+Wisconsin,Property Crime,Larceny-theft,2000,119605
+Wisconsin,Property Crime,Larceny-theft,2001,125275
+Wisconsin,Property Crime,Larceny-theft,2002,123365
+Wisconsin,Property Crime,Larceny-theft,2003,118775
+Wisconsin,Property Crime,Larceny-theft,2004,111482
+Wisconsin,Property Crime,Larceny-theft,2005,110323
+Wisconsin,Property Crime,Motor vehicle theft,1960,4127
+Wisconsin,Property Crime,Motor vehicle theft,1961,3451
+Wisconsin,Property Crime,Motor vehicle theft,2005,12546
+Wyoming,Violent Crime,Murder and nonnegligent Manslaughter,1960,16
+Wyoming,Violent Crime,Murder and nonnegligent Manslaughter,1961,11
+Wyoming,Violent Crime,Murder and nonnegligent Manslaughter,1962,12
+Wyoming,Violent Crime,Murder and nonnegligent Manslaughter,1963,12
+Wyoming,Violent Crime,Murder and nonnegligent Manslaughter,1964,19
+Wyoming,Violent Crime,Murder and nonnegligent Manslaughter,1965,10
+Wyoming,Violent Crime,Murder and nonnegligent Manslaughter,1966,16
+Wyoming,Violent Crime,Murder and nonnegligent Manslaughter,1967,15
+Wyoming,Violent Crime,Murder and nonnegligent Manslaughter,1968,20
+Wyoming,Violent Crime,Murder and nonnegligent Manslaughter,1969,33
+Wyoming,Violent Crime,Murder and nonnegligent Manslaughter,1970,19
+Wyoming,Violent Crime,Murder and nonnegligent Manslaughter,1971,18
+Wyoming,Violent Crime,Murder and nonnegligent Manslaughter,1972,14
+Wyoming,Violent Crime,Murder and nonnegligent Manslaughter,1973,24
+Wyoming,Violent Crime,Robbery,1998,78
+Wyoming,Violent Crime,Robbery,1999,74
+Wyoming,Violent Crime,Robbery,2000,70
+Wyoming,Violent Crime,Robbery,2001,84
+Wyoming,Violent Crime,Robbery,2002,93
+Wyoming,Violent Crime,Robbery,2003,84
+Wyoming,Violent Crime,Robbery,2004,67
+Wyoming,Violent Crime,Robbery,2005,78
+Wyoming,Violent Crime,Aggravated assault,1960,147
+Wyoming,Violent Crime,Aggravated assault,1961,144
+Wyoming,Violent Crime,Aggravated assault,1962,65
+Wyoming,Violent Crime,Aggravated assault,2005,958
+Wyoming,Property Crime,Burglary,1960,990
+Wyoming,Property Crime,Burglary,2001,2481
+Wyoming,Property Crime,Burglary,2002,2448
+Wyoming,Property Crime,Burglary,2003,2611
+Wyoming,Property Crime,Burglary,2004,2738
+Wyoming,Property Crime,Burglary,2005,2426
+Wyoming,Property Crime,Larceny-theft,1960,4620
+Wyoming,Property Crime,Larceny-theft,1961,4747
+Wyoming,Property Crime,Larceny-theft,1962,4177
+Wyoming,Property Crime,Larceny-theft,2003,13239
+Wyoming,Property Crime,Larceny-theft,2004,13352
+Wyoming,Property Crime,Larceny-theft,2005,12905
+Wyoming,Property Crime,Motor vehicle theft,1960,379
+Wyoming,Property Crime,Motor vehicle theft,1961,385
+Wyoming,Property Crime,Motor vehicle theft,1962,496
