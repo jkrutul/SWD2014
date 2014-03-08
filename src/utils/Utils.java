@@ -105,16 +105,17 @@ public class Utils {
 		return max_val;
 	}
 	
-	public static int getMaxVal(Integer[] tab, int max_v){
-		if(tab.length==0)
-			return -1;
-		
-		int max_val = tab[0];
+	public static Integer getMaxVal(Integer[] tab, int less_than){
+		LinkedList<Integer> list = new LinkedList<>();
 		for(int i : tab){
-			if(i>max_val && i<max_v)
-				max_val = i;
+			if(i<less_than)
+				list.add(i);
 		}
-		return max_val;
+		
+		if(list.isEmpty())
+			return null;
+		Collections.sort(list);
+		return list.getLast();
 	}
 	
 	
@@ -141,7 +142,7 @@ public class Utils {
 		return max_val;
 	}
 	
-	public static int getMaxVal(LinkedHashMap<String, Integer> map, int lessThan){
+	public static Integer getMaxVal(LinkedHashMap<String, Integer> map, int lessThan){
 		Collection<Integer> valset  = map.values();
 		Integer[] values = valset.toArray(new Integer[valset.size()]);
 		return getMaxVal(values,lessThan);
@@ -191,17 +192,20 @@ public class Utils {
 				
 
 		int n_class = 1;
-		int max_val =getMaxVal(vals);
+		Integer max_val =getMaxVal(vals);
 		
-		while(n_class <= numberOfClasses+1){
+		while(n_class <= numberOfClasses){
 			int index= 0;
 			for(Integer i : vals){
-				if(i == max_val)					
+				if(i.equals(max_val)){					
 					class_vals[index]= n_class;
+				}
 				index++;
 			}
 			
 			max_val = getMaxVal(map, max_val);
+			if(max_val == null)
+				break;
 			n_class++;
 		}
 		
