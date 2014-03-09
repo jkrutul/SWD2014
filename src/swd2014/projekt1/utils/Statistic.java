@@ -1,10 +1,10 @@
-package utils;
+package swd2014.projekt1.utils;
 
 public class Statistic {
 	
 	
 	
-	/* Wartoœæ œrednia
+	/* Wartoï¿½ï¿½ ï¿½rednia
 	 * 
 	 */
 	public static float mean(float[] data){

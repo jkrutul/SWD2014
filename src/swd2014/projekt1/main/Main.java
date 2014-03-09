@@ -1,39 +1,39 @@
 /*
-zrobione = 1. Wczytywanie danych w formacie tekstowym (dane oddzielone spacj¹, tabulatorem, œrednikiem; w pliku same dane bez liczby wierszy lub kolumn; dane mog¹ byæ tekstowe lub numeryczne), mog¹ posiadaæ wiersz nag³ówkowy z nazwami kolumn. Ka¿d¹ liniê zaczynaj¹c¹ siê od znaku # nale¿y zignorowaæ (komentarz).
-2. Dla chêtnych wczytywanie danych z Excela lub bezpoœrednie przeklejanie danych z Excela do arkusza z danymi w programie.
+zrobione = 
+1. Wczytywanie danych w formacie tekstowym (dane oddzielone spacjï¿½, tabulatorem, ï¿½rednikiem; w pliku same dane bez liczby wierszy lub kolumn; dane mogï¿½ byï¿½ tekstowe lub numeryczne), mogï¿½ posiadaï¿½ wiersz nagï¿½ï¿½wkowy z nazwami kolumn. Kaï¿½dï¿½ liniï¿½ zaczynajï¿½cï¿½ siï¿½ od znaku # naleï¿½y zignorowaï¿½ (komentarz).
+2. Dla chï¿½tnych wczytywanie danych z Excela lub bezpoï¿½rednie przeklejanie danych z Excela do arkusza z danymi w programie.
 
 Dyskretyzacja
-zrobione = 1. Dyskretyzacja zmiennych rzeczywistych na okreœlon¹ przez u¿ytkownika liczbê przedzia³ów - dodanie do zbioru danych nowego atrybutu o wartoœciach nominalnych, przyjmuj¹cego dla poszczególnych obserwacji wartoœæ odpowiadaj¹c¹ numerowi przedzia³u przypisanego wartoœci wybranego atrybutu a, przy podziale wartoœci atrybutu a na zadan¹ liczbê n przedzia³ów o równej d³ugoœci.
-zrobione = 2. Zamiana danych tekstowych na numeryczne (np. klasa1, klasa2, klasa3 zmieniane na kolejne liczby ca³kowite 1,2,3 - np. wg kolejnoœci alfabetycznej lub kolejnoœci wyst¹pienia)
-zrobione = 3. Preferowanie najliczniejszych klas - stosowane do atrybutów o wartoœciach nominalnych, dodanie do zbioru danych nowego atrybutu o wartoœciach nominalnych przypisuj¹cego najliczniej reprezentowanej wartoœci - wartoœæ 1, drugiej pod wzglêdem licznoœci wartoœci - wartoœæ 2, itd. a¿ do zadanej liczby n, pozosta³ym wartoœciom - wartoœæ n+1
+zrobione = 1. Dyskretyzacja zmiennych rzeczywistych na okreï¿½lonï¿½ przez uï¿½ytkownika liczbï¿½ przedziaï¿½ï¿½w - dodanie do zbioru danych nowego atrybutu o wartoï¿½ciach nominalnych, przyjmujï¿½cego dla poszczegï¿½lnych obserwacji wartoï¿½ï¿½ odpowiadajï¿½cï¿½ numerowi przedziaï¿½u przypisanego wartoï¿½ci wybranego atrybutu a, przy podziale wartoï¿½ci atrybutu a na zadanï¿½ liczbï¿½ n przedziaï¿½ï¿½w o rï¿½wnej dï¿½ugoï¿½ci.
+zrobione = 2. Zamiana danych tekstowych na numeryczne (np. klasa1, klasa2, klasa3 zmieniane na kolejne liczby caï¿½kowite 1,2,3 - np. wg kolejnoï¿½ci alfabetycznej lub kolejnoï¿½ci wystï¿½pienia)
+zrobione = 3. Preferowanie najliczniejszych klas - stosowane do atrybutï¿½w o wartoï¿½ciach nominalnych, dodanie do zbioru danych nowego atrybutu o wartoï¿½ciach nominalnych przypisujï¿½cego najliczniej reprezentowanej wartoï¿½ci - wartoï¿½ï¿½ 1, drugiej pod wzglï¿½dem licznoï¿½ci wartoï¿½ci - wartoï¿½ï¿½ 2, itd. aï¿½ do zadanej liczby n, pozostaï¿½ym wartoï¿½ciom - wartoï¿½ï¿½ n+1
 
 Standaryzacja/normalizacja:
-1. Normalizacja zmiennych rzeczywistych ( (wartoœæ-œrednia)/odchylenie_standardowe)
-2. Zmiana wartoœci z przedzia³u min-max na przedzia³, dla którego wartoœci podaje u¿ytkownik - wart1-wart2.
+1. Normalizacja zmiennych rzeczywistych ( (wartoï¿½ï¿½-ï¿½rednia)/odchylenie_standardowe)
+2. Zmiana wartoï¿½ci z przedziaï¿½u min-max na przedziaï¿½, dla ktï¿½rego wartoï¿½ci podaje uï¿½ytkownik - wart1-wart2.
 
 Podstawowe statystyki
-1. Œrednia
+1. ï¿½rednia
 2. Mediana
 3. Min/Max
 4. Kwartyle (Q1 i Q3)
 5. Percentyle (P5, P10, P90, P95)
 
 Wykresy:
-1. Wykres rozproszeñ 2D - zwyk³a zale¿noœæ dwóch zmiennych - u¿ytkownik musi mieæ mo¿liwoœæ wyboru zmiennych, mo¿liwoœæ wyœwietlania klas w kolorach.
-2. 3D (dla chêtnych)
-3. Dla chêtnych wykres 3D z mo¿liwoœci¹ obrotu.
+1. Wykres rozproszeï¿½ 2D - zwykï¿½a zaleï¿½noï¿½ï¿½ dwï¿½ch zmiennych - uï¿½ytkownik musi mieï¿½ moï¿½liwoï¿½ï¿½ wyboru zmiennych, moï¿½liwoï¿½ï¿½ wyï¿½wietlania klas w kolorach.
+2. 3D (dla chï¿½tnych)
+3. Dla chï¿½tnych wykres 3D z moï¿½liwoï¿½ciï¿½ obrotu.
  */
-package com.example;
+package swd2014.projekt1.main;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.LinkedList;
 
-import utils.Converts;
-import utils.DataPrinting;
-import utils.Statistic;
-import utils.Utils;
-import csv.CsvFileReader;
-import csv.CsvReadWriteSettings;
+import swd2014.projekt1.csv.CsvFileReader;
+import swd2014.projekt1.csv.CsvReadWriteSettings;
+import swd2014.projekt1.utils.Converts;
+import swd2014.projekt1.utils.DataPrinting;
+import swd2014.projekt1.utils.Statistic;
+import swd2014.projekt1.utils.Utils;
 
 public class Main {
 
@@ -43,7 +43,7 @@ public class Main {
 		boolean hasColumnsNames = false;
 		
 		CsvFileReader cfr = null;
-		Log("\nWczytanie zawartoœci pliku do macierzy\n");
+		Log("\nWczytanie zawartoï¿½ci pliku do macierzy\n");
 		try {
 			cfr = new CsvFileReader(file, new CsvReadWriteSettings(",", true, hasColumnsNames));
  		} catch (FileNotFoundException e) {
@@ -68,7 +68,7 @@ public class Main {
 		/*
 		DataPrinting.printMatrix(m.data, m.getnRows(), m.getnCols());
 
-		Log("\nSortowanie ka¿dej kolumny\n");
+		Log("\nSortowanie kaï¿½dej kolumny\n");
 		for(int i=0; i< m.getnCols(); i++){
 			String col[]= m.getColumn(i);
 			Arrays.sort(col);
@@ -91,7 +91,7 @@ public class Main {
 		DataPrinting.printMatrix(m.data, m.getnRows(),m.getnCols());
 		
 		
-		Log("\nZamiana wartoœæi tekstowych na liczbowe\n");		
+		Log("\nZamiana wartoï¿½ï¿½i tekstowych na liczbowe\n");		
 		int[] n_data = Converts.convertStringData(m.getColumn(4), true);
 		String[] n_data_strings = Converts.convertToString(n_data);
 		m.replaceColumn(n_data_strings, 4);
@@ -110,7 +110,7 @@ public class Main {
 		
 		float mean;
 		mean = Statistic.mean(Converts.convertToFloat(m.getColumn(c)));
-		Log("œrednia: "+ mean+"\n");
+		Log("ï¿½rednia: "+ mean+"\n");
 		
 		float variance;
 		variance = Statistic.variance(Converts.convertToFloat(m.getColumn(c)));

@@ -1,4 +1,4 @@
-package csv;
+package swd2014.projekt1.csv;
 
 public class CsvReadWriteSettings {
 	private String delimeter = ",";
