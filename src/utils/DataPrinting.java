@@ -1,6 +1,9 @@
 package utils;
 
-import java.util.LinkedList;
+import java.util.Map;
+
+import com.example.Main;
+import com.example.Matrix;
 
 public class DataPrinting {
 /**
@@ -18,6 +21,19 @@ public class DataPrinting {
 		}
 	}
 	
+	
+	public static void printMatrix(Matrix matrix) {
+		String[][] matrix_tab = matrix.getMatrix();
+		int rows, cols;
+		rows = matrix.getnRows();
+		cols = matrix.getnCols();
+		for (int r = 0; r < rows; r++) {
+			for (int c = 0; c < cols; c++)
+				System.out.print(matrix_tab[r][c] + ", ");
+			System.out.println();
+		}
+	}
+	
 	public static void printVector(String[] rows) {
 		for(String attr : rows){
 			System.out.print(attr+", ");
@@ -30,5 +46,13 @@ public class DataPrinting {
 			System.out.print(attr+", ");
 		}
 		System.out.println();
+	}
+	
+	
+	public static void printMap(Map<String,Integer> map){
+		for( String s : map.keySet()){
+			System.out.println("key: "+ s + " value: "+ map.get(s));
+		}
+		
 	}
 }

@@ -5,7 +5,7 @@ zrobione = 1. Wczytywanie danych w formacie tekstowym (dane oddzielone spacj¹, t
 Dyskretyzacja
 zrobione = 1. Dyskretyzacja zmiennych rzeczywistych na okreœlon¹ przez u¿ytkownika liczbê przedzia³ów - dodanie do zbioru danych nowego atrybutu o wartoœciach nominalnych, przyjmuj¹cego dla poszczególnych obserwacji wartoœæ odpowiadaj¹c¹ numerowi przedzia³u przypisanego wartoœci wybranego atrybutu a, przy podziale wartoœci atrybutu a na zadan¹ liczbê n przedzia³ów o równej d³ugoœci.
 zrobione = 2. Zamiana danych tekstowych na numeryczne (np. klasa1, klasa2, klasa3 zmieniane na kolejne liczby ca³kowite 1,2,3 - np. wg kolejnoœci alfabetycznej lub kolejnoœci wyst¹pienia)
-3. Preferowanie najliczniejszych klas - stosowane do atrybutów o wartoœciach nominalnych, dodanie do zbioru danych nowego atrybutu o wartoœciach nominalnych przypisuj¹cego najliczniej reprezentowanej wartoœci - wartoœæ 1, drugiej pod wzglêdem licznoœci wartoœci - wartoœæ 2, itd. a¿ do zadanej liczby n, pozosta³ym wartoœciom - wartoœæ n+1
+zrobione = 3. Preferowanie najliczniejszych klas - stosowane do atrybutów o wartoœciach nominalnych, dodanie do zbioru danych nowego atrybutu o wartoœciach nominalnych przypisuj¹cego najliczniej reprezentowanej wartoœci - wartoœæ 1, drugiej pod wzglêdem licznoœci wartoœci - wartoœæ 2, itd. a¿ do zadanej liczby n, pozosta³ym wartoœciom - wartoœæ n+1
 
 Standaryzacja/normalizacja:
 1. Normalizacja zmiennych rzeczywistych ( (wartoœæ-œrednia)/odchylenie_standardowe)
@@ -28,7 +28,9 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import utils.Converts;
 import utils.DataPrinting;
+import utils.Statistic;
 import utils.Utils;
 import csv.CsvFileReader;
 import csv.CsvReadWriteSettings;
@@ -37,12 +39,13 @@ public class Main {
 
 
 	public static void main(String[] args) {
-		String file ="s_crimes.txt";
+		String file ="plik1.txt";
+		boolean hasColumnsNames = false;
 		
 		CsvFileReader cfr = null;
 		Log("\nWczytanie zawartoœci pliku do macierzy\n");
 		try {
-			cfr = new CsvFileReader(file, new CsvReadWriteSettings(",", true, false));
+			cfr = new CsvFileReader(file, new CsvReadWriteSettings(",", true, hasColumnsNames));
  		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -51,10 +54,15 @@ public class Main {
 			return;
 		
 		Matrix m = cfr.getData_matrix();
-		Log("\nNazwy kolumn ("+m.getnCols()+"):");
-		LinkedList<String> column_names = cfr.getColumNames();
-		for(String cName : column_names)
-			Log(cName);
+		
+		if(hasColumnsNames){
+			Log("\nNazwy kolumn ("+m.getnCols()+"):");
+	
+			LinkedList<String> column_names = cfr.getColumNames();
+			for(String cName : column_names)
+				Log(cName);
+		
+		}
 
 		Log("\nWiersze: ("+m.getnRows()+")\n");
 		/*
@@ -84,17 +92,52 @@ public class Main {
 		
 		
 		Log("\nZamiana wartoœæi tekstowych na liczbowe\n");		
-		int[] n_data = Utils.convertStringData(m.getColumn(4), true);
-		String[] n_data_strings = Utils.convertToString(n_data);
+		int[] n_data = Converts.convertStringData(m.getColumn(4), true);
+		String[] n_data_strings = Converts.convertToString(n_data);
 		m.replaceColumn(n_data_strings, 4);
 		DataPrinting.printMatrix(m.data, m.getnRows(),m.getnCols());
 		
 */
+		DataPrinting.printMatrix(m);
+		Log("\nPreferowanie najliczniejszych klas\n");
+		int class_attr[] = Utils.classAttribution(m.getColumn(0),5);
+		m.appendColumn(Converts.convertToString(class_attr));
 		
-
-		int class_attr[] = Utils.classAttribution(m.getColumn(0));
-		DataPrinting.printVector(class_attr);
+		DataPrinting.printMatrix(m);
 		
+		int c =3;
+		Log("\nStatystyka dla kolumny "+c+"\n");
+		
+		float mean;
+		mean = Statistic.mean(Converts.convertToFloat(m.getColumn(c)));
+		Log("œrednia: "+ mean+"\n");
+		
+		float variance;
+		variance = Statistic.variance(Converts.convertToFloat(m.getColumn(c)));
+		Log("wariancja: "+ variance+"\n");
+		
+		
+		float sd;
+		sd = Statistic.standardDeviantion(Converts.convertToFloat(m.getColumn(c)));
+		Log("odchylenie standardowe: "+ sd+"\n");
+		
+		
+		float median;
+		median = Statistic.median(Converts.convertToFloat(m.getColumn(c)));
+		Log("mediana: "+ median+"\n");
+		
+		float q1;
+		q1 = Statistic.q1(Converts.convertToFloat(m.getColumn(c)));
+		Log("kwartyl Q1: "+ q1+"\n");
+		
+		float q3;
+		q3 = Statistic.q3(Converts.convertToFloat(m.getColumn(c)));
+		Log("kwartyl Q3: "+ q3+"\n");
+		
+		float percentile;
+		percentile = (float) Statistic.quantile(Converts.convertToFloat(m.getColumn(c)),5);
+		Log("percentyl 5%: "+ percentile+"\n");
+				
 	}
 	
 	

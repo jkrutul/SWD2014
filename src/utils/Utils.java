@@ -8,8 +8,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import com.example.Main;
 
 public class Utils {
 	
@@ -66,33 +74,10 @@ public class Utils {
 	}
 	
 	
-	public static int[] convertStringData(String[] data, boolean alphabeticalOrder){
-		if(alphabeticalOrder){
-			Arrays.sort(data);
-		}
-		int[] converted = new int[data.length];
-		ArrayList<String> unique_visited = new ArrayList<>();
-		int i = 0;
-		for(String s : data){
-			if(!unique_visited.contains(s))
-				unique_visited.add(s);
-			converted[i++]=unique_visited.indexOf(s);
-		}
-		
-		return converted;
-	}
+
 	
 	
-	public static String[] convertToString(int [] numbers){
-		String[] strings = new String[numbers.length];
-		int i =0;
-		for(int n : numbers)
-			strings[i++] = String.valueOf(n);
-		
-		return strings;
-			
-	}
-	
+
 	public static int getMaxVal(Integer [] tab){
 		if(tab.length==0)
 			return -1;
@@ -142,7 +127,7 @@ public class Utils {
 		return max_val;
 	}
 	
-	public static Integer getMaxVal(LinkedHashMap<String, Integer> map, int lessThan){
+	public static Integer getMaxVal(Map<String, Integer> map, int lessThan){
 		Collection<Integer> valset  = map.values();
 		Integer[] values = valset.toArray(new Integer[valset.size()]);
 		return getMaxVal(values,lessThan);
@@ -155,79 +140,107 @@ public class Utils {
 	}
 	
 
-	
-	public static int[] classAttribution(String[] values){
+	/**
+	 * Funkcja przypisuje klasy dla atrybutów
+	 * @param values - atrybuty
+	 * @param howManyClassAssign - liczba klas które przypisaæ atrybutom, pozosta³e maj¹ klasê n+1, 1 jest dla klasy z najwiêksz¹ liczb¹ atrybutów,
+	 * @return tablica klas przypisanym atrybutom
+	 */
+	public static int[] classAttribution(String[] values, int howManyClassAssign){
 		if(values == null || values.length<=0)
 			return null;
 
-		//String[] valuesToClass = new String[values.length];
-		LinkedHashMap<String, Integer> map = new LinkedHashMap<>();
+		LinkedHashMap<String, Integer> map = new LinkedHashMap<>();			// string - klasa, integer - liczba elementów klasy
 		
-		for(String v : values){			
+		for(String v : values){												//podliczenie ile jest klas i okreœlenie wielkoœci ka¿dej z nich 
 			if(map.containsKey(v))
 				map.put(v,  map.get(v)+1);
 			else
 				map.put(v, 1);				
 		}
+		
+		//DataPrinting.printMap(map);
+		LinkedHashMap<String, Integer> sorted_map = sortMap(map);
 
-		/*
-		Collection<String> keyset  = map.keySet();
-		Collection<Integer> valset  = map.values();
+		int numberOfClasses = sorted_map.keySet().size();	// maksymalna liczba klas na które mo¿na podzieliæ atrybuty
+		Main.Log("liczba klas na które mo¿na podzieliæ zbiór: " + numberOfClasses+"\n");
 		
-		String[] distingKeyset = keyset.toArray(new String[keyset.size()]);
-		Integer[] distingValues = valset.toArray(new Integer[valset.size()]);
-		
-		
-		LinkedList<Integer> vals = (LinkedList<Integer>) map.values();
-		LinkedList<Integer> vals_cpy = (LinkedList<Integer>) map.values();
-		*/
-		int numberOfClasses = map.keySet().size();
-		Collection<Integer> valset  = map.values();
-		Integer[] vals = valset.toArray(new Integer[numberOfClasses]);
-		
-		Collection<String> keyset  = map.keySet();
-		String[] keySet = keyset.toArray(new String[keyset.size()]);
+		Collection<String> keyset  = sorted_map.keySet();
+		String[] keySet = keyset.toArray(new String[numberOfClasses]);
 		
 		Integer[] class_vals = new Integer[numberOfClasses];
-				
-
-		int n_class = 1;
-		Integer max_val =getMaxVal(vals);
 		
-		while(n_class <= numberOfClasses){
-			int index= 0;
-			for(Integer i : vals){
-				if(i.equals(max_val)){					
-					class_vals[index]= n_class;
-				}
-				index++;
-			}
-			
-			max_val = getMaxVal(map, max_val);
-			if(max_val == null)
-				break;
-			n_class++;
+		
+		
+		int n_class = 1;
+		int index = 0;
+		
+		while(n_class <= howManyClassAssign){
+			class_vals[index++] = n_class++;
 		}
 		
-		
-		
+		// dla pozosta³ych n+1
+		while(index < class_vals.length){
+			class_vals[index++] = n_class;
+		}
+
 		int i=0;
 		for(String key : keySet)
-			map.put(key, class_vals[i++]);
+			sorted_map.put(key, class_vals[i++]);
 		
 		int [] split_toClasses = new int[values.length];
-		
-		int id=0;
+		Main.Log(sorted_map.toString());
+		int id=0;	
 		for(String s : values){
-			split_toClasses[id++] = map.get(s);
+			Integer class_n = sorted_map.get(s);
+			split_toClasses[id++] = class_n.intValue();
 		}
-		
-		
+
 		return split_toClasses;
 	}
 	
 	
+	public static LinkedHashMap<String, Integer> sortMap(HashMap< String, Integer> map ){
+	        ValueComparator bvc = new ValueComparator(map);
+	        TreeMap<String,Integer> sorted_map = new TreeMap<String,Integer>(bvc);
 
+	        System.out.println("unsorted map: "+map);
+
+	        sorted_map.putAll(map);
+	        Set<String> key_set =  sorted_map.keySet();
+	        Collection<Integer> val_set =  sorted_map.values();
+	        
+	        LinkedHashMap<String, Integer> sorted_m = new LinkedHashMap<>();
+	        
+
+	        Iterator v_iter = val_set.iterator();
+
+	        for( String s : key_set){
+	        	sorted_m.put(s, (Integer) v_iter.next());
+	        }
+	        
+	        
+	       	 
+	        System.out.println("results: "+sorted_m);	
+	        return sorted_m;
+	}
 	
 
+}
+
+class ValueComparator implements Comparator<String> {
+
+    Map<String, Integer> base;
+    public ValueComparator(Map<String, Integer> base) {
+        this.base = base;
+    }
+
+    // Note: this comparator imposes orderings that are inconsistent with equals.    
+    public int compare(String a, String b) {
+        if (base.get(a) >= base.get(b)) {
+            return -1;
+        } else {
+            return 1;
+        } // returning 0 would merge keys
+    }
 }
