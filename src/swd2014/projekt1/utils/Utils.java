@@ -1,4 +1,4 @@
-package utils;
+package swd2014.projekt1.utils;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -17,14 +17,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import com.example.Main;
+import swd2014.projekt1.main.Main;
 
 public class Utils {
 	
 	/**
 	 *  Liczy ile linii jest w pliku tekstowym
 	 * @param filename nazwa pliku
-	 * @return liczba linii bêd¹cych w pliku
+	 * @return liczba linii bï¿½dï¿½cych w pliku
 	 * @throws IOException
 	 */
 	public static int count(String filename) throws IOException {
@@ -49,10 +49,10 @@ public class Utils {
 	}
 	
 	/***
-	 * Zwraca tablicê elementów o wartoœciach od 0 do (n/divideBy)
-	 * @param divideBy -  na ilê czêœci podzieliæ zbiór
-	 * @param n - liczba elementów zbioru
-	 * @return tablica liczb ca³kowitych o d³ugoœci n
+	 * Zwraca tablicï¿½ elementï¿½w o wartoï¿½ciach od 0 do (n/divideBy)
+	 * @param divideBy -  na ilï¿½ czï¿½ci podzieliï¿½ zbiï¿½r
+	 * @param n - liczba elementï¿½w zbioru
+	 * @return tablica liczb caï¿½kowitych o dï¿½ugoï¿½ci n
 	 */
 	public static int[] discretization(int divideBy, int n){
 		if(divideBy<=0 || n<=0)
@@ -141,18 +141,18 @@ public class Utils {
 	
 
 	/**
-	 * Funkcja przypisuje klasy dla atrybutów
+	 * Funkcja przypisuje klasy dla atrybutï¿½w
 	 * @param values - atrybuty
-	 * @param howManyClassAssign - liczba klas które przypisaæ atrybutom, pozosta³e maj¹ klasê n+1, 1 jest dla klasy z najwiêksz¹ liczb¹ atrybutów,
+	 * @param howManyClassAssign - liczba klas ktï¿½re przypisaï¿½ atrybutom, pozostaï¿½e majï¿½ klasï¿½ n+1, 1 jest dla klasy z najwiï¿½kszï¿½ liczbï¿½ atrybutï¿½w,
 	 * @return tablica klas przypisanym atrybutom
 	 */
 	public static int[] classAttribution(String[] values, int howManyClassAssign){
 		if(values == null || values.length<=0)
 			return null;
 
-		LinkedHashMap<String, Integer> map = new LinkedHashMap<>();			// string - klasa, integer - liczba elementów klasy
+		LinkedHashMap<String, Integer> map = new LinkedHashMap<>();			// string - klasa, integer - liczba elementï¿½w klasy
 		
-		for(String v : values){												//podliczenie ile jest klas i okreœlenie wielkoœci ka¿dej z nich 
+		for(String v : values){												//podliczenie ile jest klas i okreï¿½lenie wielkoï¿½ci kaï¿½dej z nich 
 			if(map.containsKey(v))
 				map.put(v,  map.get(v)+1);
 			else
@@ -162,8 +162,8 @@ public class Utils {
 		//DataPrinting.printMap(map);
 		LinkedHashMap<String, Integer> sorted_map = sortMap(map);
 
-		int numberOfClasses = sorted_map.keySet().size();	// maksymalna liczba klas na które mo¿na podzieliæ atrybuty
-		Main.Log("liczba klas na które mo¿na podzieliæ zbiór: " + numberOfClasses+"\n");
+		int numberOfClasses = sorted_map.keySet().size();	// maksymalna liczba klas na ktï¿½re moï¿½na podzieliï¿½ atrybuty
+		Main.Log("liczba klas na ktï¿½re moï¿½na podzieliï¿½ zbiï¿½r: " + numberOfClasses+"\n");
 		
 		Collection<String> keyset  = sorted_map.keySet();
 		String[] keySet = keyset.toArray(new String[numberOfClasses]);
@@ -179,7 +179,7 @@ public class Utils {
 			class_vals[index++] = n_class++;
 		}
 		
-		// dla pozosta³ych n+1
+		// dla pozostaï¿½ych n+1
 		while(index < class_vals.length){
 			class_vals[index++] = n_class;
 		}

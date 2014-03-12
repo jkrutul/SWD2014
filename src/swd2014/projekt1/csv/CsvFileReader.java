@@ -1,13 +1,12 @@
-package csv;
+package swd2014.projekt1.csv;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-import com.example.Matrix;
-
-import utils.DataPrinting;
+import swd2014.projekt1.main.Matrix;
+import swd2014.projekt1.utils.DataPrinting;
 
 public class CsvFileReader {
 	private LinkedList<String[]> rows;
@@ -42,8 +41,8 @@ public class CsvFileReader {
 	 * Funkcja pobiera z pliku dane w formacie csv,
 	 * 
 	 * @param path_to_file
-	 *            œcie¿ka do pliku z danymi
-	 * @return macierz stringów zawieraj¹ca dane
+	 *            ï¿½cieï¿½ka do pliku z danymi
+	 * @return macierz stringï¿½w zawierajï¿½ca dane
 	 * @throws FileNotFoundException
 	 */
 	private String[][] read_csv_file(String path_to_file)

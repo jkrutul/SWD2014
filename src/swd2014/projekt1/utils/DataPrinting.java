@@ -1,14 +1,15 @@
-package utils;
+package swd2014.projekt1.utils;
 
 import java.util.Map;
 
-import com.example.Main;
-import com.example.Matrix;
+import org.eclipse.swt.widgets.List;
+
+import swd2014.projekt1.main.Matrix;
 
 public class DataPrinting {
 /**
- * Drukuje macie¿ w konsoli
- * @param matrix macie¿ do wydrukowania
+ * Drukuje macieï¿½ w konsoli
+ * @param matrix macieï¿½ do wydrukowania
  * @param rows liczba wierszy
  * @param cols liczba kolumn
  */
@@ -31,6 +32,22 @@ public class DataPrinting {
 			for (int c = 0; c < cols; c++)
 				System.out.print(matrix_tab[r][c] + ", ");
 			System.out.println();
+		}
+	}
+	
+	public static void printMatrix(Matrix matrix, List view) {
+		
+		String[][] matrix_tab = matrix.getMatrix();
+		int rows, cols;
+		rows = matrix.getnRows();
+		cols = matrix.getnCols();
+		for (int r = 0; r < rows; r++) {
+			StringBuffer buffer=new StringBuffer();
+			for (int c = 0; c < cols; c++)
+			{
+				buffer.append(matrix_tab[r][c] + ", ");
+			}
+			view.add(buffer.toString());
 		}
 	}
 	

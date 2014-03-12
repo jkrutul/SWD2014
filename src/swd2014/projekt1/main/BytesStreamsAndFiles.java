@@ -1,4 +1,4 @@
-package com.example;
+package swd2014.projekt1.main;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

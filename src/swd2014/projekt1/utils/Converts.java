@@ -1,4 +1,4 @@
-package utils;
+package swd2014.projekt1.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
