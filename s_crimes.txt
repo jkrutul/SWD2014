@@ -424,3 +424,4 @@ Wyoming,Property Crime,Larceny-theft,2005,12905
 Wyoming,Property Crime,Motor vehicle theft,1960,379
 Wyoming,Property Crime,Motor vehicle theft,1961,385
 Wyoming,Property Crime,Motor vehicle theft,1962,496
+Wyoming,Property Crime,Motor vehicle theft,1963,512
