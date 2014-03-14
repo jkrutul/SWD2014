@@ -40,6 +40,10 @@ public class Statistic {
 		return (float) Math.sqrt(variance);
 	}
 	
+	public static double standardDeviantion(double variance){
+		return (double) Math.sqrt(variance);
+	}
+	
 	public static float median(float[] data){
 		int n = data.length;
 		boolean isEven = (n%2 == 0) ? true : false;

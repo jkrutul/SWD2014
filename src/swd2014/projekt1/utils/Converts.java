@@ -44,4 +44,14 @@ public class Converts {
 			
 	}
 	
+	public static double[] convertToDouble(String[] numbers){
+		double[] doubles = new double[numbers.length];
+		int i =0;
+		for(String s : numbers)
+			doubles[i++] = Double.valueOf(s);
+		
+		return doubles;
+			
+	}
+	
 }
