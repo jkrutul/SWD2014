@@ -2,7 +2,7 @@ package swd2014.projekt1.utils;
 
 import java.util.Map;
 
-import org.eclipse.swt.widgets.List;
+import javax.swing.JTextArea;
 
 import swd2014.projekt1.main.Matrix;
 
@@ -35,7 +35,7 @@ public class DataPrinting {
 		}
 	}
 	
-	public static void printMatrix(Matrix matrix, List view) {
+	public static void printMatrix(Matrix matrix, JTextArea ta) {
 		
 		String[][] matrix_tab = matrix.getMatrix();
 		int rows, cols;
@@ -47,7 +47,7 @@ public class DataPrinting {
 			{
 				buffer.append(matrix_tab[r][c] + ", ");
 			}
-			view.add(buffer.toString());
+			ta.append(buffer.toString());
 		}
 	}
 	

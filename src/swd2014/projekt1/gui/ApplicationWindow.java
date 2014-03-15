@@ -1,21 +1,14 @@
 package swd2014.projekt1.gui;
 
+
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 
-import javax.swing.text.View;
+import javax.swing.JFileChooser;
 
 import org.apache.commons.math3.stat.StatUtils;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Shell;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import swd2014.projekt1.csv.CsvFileReader;
@@ -26,162 +19,163 @@ import swd2014.projekt1.utils.DataPrinting;
 import swd2014.projekt1.utils.Statistic;
 import swd2014.projekt1.utils.Utils;
 
-public class ApplicationWindow {
+public class ApplicationWindow extends javax.swing.JFrame{
 
+
+	private static final long serialVersionUID = 1L;
+	
 	private static Matrix m;
 	private static CsvFileReader cfr = null;
 	private static String file = "plik1.txt";
 	private static boolean hasColumnsNames = false;
 	
-	private static Label avgLbl, lblrednia, lblWariancja, varLbl, OdchStd, sdLbl, mediana, medLbl, kwartyl1, q1Lbl, kwartyl3, q3Lbl, percentyl, prcLbl;
+	//private static Label avgLbl, lblrednia, lblWariancja, varLbl, OdchStd, sdLbl, mediana, medLbl, kwartyl1, q1Lbl, kwartyl3, q3Lbl, percentyl, prcLbl;
 	
+	
+    private javax.swing.JButton calculate_file;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea consolTextArea;
+    private javax.swing.JButton load_file;
+    private javax.swing.JButton open_file;
+   
+    private JFileChooser fc;
+    
 
-	protected Shell shell;
+    public ApplicationWindow() {
+        initComponents();
+    }
+    
+    
+    private void initComponents() {
+        fc = new JFileChooser();
+        
 
-	/**
-	 * Launch the application.
-	 * 
-	 * @param args
-	 */
+        jScrollPane1 = new javax.swing.JScrollPane();
+        consolTextArea = new javax.swing.JTextArea();
+        open_file = new javax.swing.JButton();
+        load_file = new javax.swing.JButton();
+        calculate_file = new javax.swing.JButton();
+        
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        consolTextArea.setColumns(20);
+        consolTextArea.setRows(5);
+        consolTextArea.setBorder(javax.swing.BorderFactory.createTitledBorder("konsola"));
+        jScrollPane1.setViewportView(consolTextArea);
+
+        open_file.setText("otwórz plik");
+        open_file.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                open_fileActionPerformed(evt);
+            }
+        });
+
+        load_file.setText("załaduj");
+        load_file.setToolTipText("");
+        load_file.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	load_fileActionPerformed(evt);
+            }
+        });
+
+        calculate_file.setText("oblicz");
+        calculate_file.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                calculate_fileActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(open_file)
+                        .addGap(55, 55, 55)
+                        .addComponent(load_file)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(calculate_file))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(open_file)
+                    .addComponent(load_file)
+                    .addComponent(calculate_file))
+                .addGap(0, 11, Short.MAX_VALUE))
+        );
+
+        pack();
+		loadData();
+    }
+    
 	public static void main(String[] args) {
-		try {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(ApplicationWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(ApplicationWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ApplicationWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ApplicationWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
 
-			
-			ApplicationWindow window = new ApplicationWindow();
-			window.open();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Open the window.
-	 */
-	public void open() {
-		Display display = Display.getDefault();
-		createContents();
-		shell.open();
-		shell.layout();
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-			}
-		}
-		
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new ApplicationWindow().setVisible(true);
+            }
+        });
 
 	}
+	
+	
+    private void open_fileActionPerformed(java.awt.event.ActionEvent evt) {                                          
+    	 int returnVal = fc.showOpenDialog(ApplicationWindow.this);
+    	 
+         if (returnVal == JFileChooser.APPROVE_OPTION) {
+             File file = fc.getSelectedFile();
+             this.file = file.getAbsolutePath();
+             
+         } else {
+             Log("Open command cancelled by user.\n");
+         }
+         
 
-	/**
-	 * Create contents of the window.
-	 */
-	protected void createContents() {
-		shell = new Shell();
-		shell.setSize(450, 300);
-		shell.setText("SWT Application");
+		Log("Ładuję plik: "+this.file);
+    } 
+    
+    private void load_fileActionPerformed(java.awt.event.ActionEvent evt) {                                          
+		loadData();
+    }  
 
-		final List lista = new List(shell, SWT.BORDER | SWT.V_SCROLL);
-		lista.setBounds(10, 10, 231, 213);
-
-		Group grpStatystyka = new Group(shell, SWT.NONE);
-		grpStatystyka.setText("Statystyka");
-		grpStatystyka.setBounds(252, 10, 184, 213);
-
-		avgLbl = new Label(grpStatystyka, SWT.NONE);
-		avgLbl.setBounds(101, 28, 73, 16);
-		avgLbl.setText("0");
-
-		lblrednia = new Label(grpStatystyka, SWT.NONE);
-		lblrednia.setBounds(10, 28, 73, 16);
-		lblrednia.setText("Średnia");
-
-		lblWariancja = new Label(grpStatystyka, SWT.NONE);
-		lblWariancja.setBounds(10, 49, 73, 16);
-		lblWariancja.setText("Wariancja");
-
-		varLbl = new Label(grpStatystyka, SWT.NONE);
-		varLbl.setBounds(101, 50, 73, 16);
-		varLbl.setText("0");
-
-		OdchStd = new Label(grpStatystyka, SWT.NONE);
-		OdchStd.setText("Odch. std.");
-		OdchStd.setBounds(10, 71, 73, 16);
-
-		sdLbl = new Label(grpStatystyka, SWT.NONE);
-		sdLbl.setText("0");
-		sdLbl.setBounds(101, 72, 73, 16);
-
-		mediana = new Label(grpStatystyka, SWT.NONE);
-		mediana.setText("Mediana");
-		mediana.setBounds(10, 93, 73, 16);
-
-		medLbl = new Label(grpStatystyka, SWT.NONE);
-		medLbl.setText("0");
-		medLbl.setBounds(101, 94, 73, 16);
-
-		kwartyl1 = new Label(grpStatystyka, SWT.NONE);
-		kwartyl1.setText("1 Kwartyl");
-		kwartyl1.setBounds(10, 115, 73, 16);
-
-		q1Lbl = new Label(grpStatystyka, SWT.NONE);
-		q1Lbl.setText("0");
-		q1Lbl.setBounds(101, 116, 73, 16);
-
-		kwartyl3 = new Label(grpStatystyka, SWT.NONE);
-		kwartyl3.setText("3 Kwartyl");
-		kwartyl3.setBounds(10, 140, 73, 16);
-
-		q3Lbl = new Label(grpStatystyka, SWT.NONE);
-		q3Lbl.setText("0");
-		q3Lbl.setBounds(101, 140, 73, 16);
-
-		percentyl = new Label(grpStatystyka, SWT.NONE);
-		percentyl.setText("Percentyl");
-		percentyl.setBounds(10, 162, 73, 16);
-
-		prcLbl = new Label(grpStatystyka, SWT.NONE);
-		prcLbl.setText("0");
-		prcLbl.setBounds(101, 162, 73, 16);
-
-		Button btnZaaduj = new Button(shell, SWT.NONE);
-		btnZaaduj.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-					loadData(lista);
-			}
-		});
-		btnZaaduj.setBounds(124, 229, 91, 26);
-		btnZaaduj.setText("Załaduj");
-
-		Button btnOblicz = new Button(shell, SWT.NONE);
-		btnOblicz.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				calculateStatisticsForColumn(3);
-			}
-		});
-		btnOblicz.setBounds(221, 229, 91, 26);
-		btnOblicz.setText("Oblicz");
-
-		Button btnWybierzPlik = new Button(shell, SWT.NONE);
-		btnWybierzPlik.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				FileDialog fileChooser = new FileDialog(shell, SWT.OPEN);
-				fileChooser.open();
-				file = fileChooser.getFilterPath()+"/"+fileChooser.getFileName();
-				Log("Ładuję plik:"+file);
-
-			}
-		});
-		btnWybierzPlik.setBounds(10, 229, 108, 26);
-		btnWybierzPlik.setText("Wybierz plik");
-		
-		loadData(lista);
-	}
+    private void calculate_fileActionPerformed(java.awt.event.ActionEvent evt) {                                               
+		calculateStatisticsForColumn(3);
+    }  
 
 
-	public static void loadData(List lista){
+
+
+
+	public void loadData(){
 		if ((file != null) && (!file.equals(""))) {
 			try {
 				cfr = new CsvFileReader(file, new CsvReadWriteSettings(",", true, hasColumnsNames));
@@ -208,13 +202,13 @@ public class ApplicationWindow {
 			Log("\nPreferowanie najliczniejszych klas\n");
 			int class_attr[] = Utils.classAttribution(m.getColumn(0), 5);
 			m.appendColumn(Converts.convertToString(class_attr));
-			DataPrinting.printMatrix(m, lista);
+			DataPrinting.printMatrix(m, consolTextArea);
 			drawChartForColumns( new int[]{0,1,2,3} );
 			calculateStatisticsForColumn(3);
 		}
 	}
 	
-	public static void calculateStatisticsForColumn(int column_index){
+	public void calculateStatisticsForColumn(int column_index){
 		
 		double[] data = Converts.convertToDouble(m.getColumn(column_index));
 
@@ -223,37 +217,37 @@ public class ApplicationWindow {
 		double mean;		
 		mean = StatUtils.mean(data);
 		Log("Srednia: " + mean + "\n");
-		avgLbl.setText(Double.toString(mean));
+		//avgLbl.setText(Double.toString(mean));
 
 		double variance;
 		variance = StatUtils.variance(data);
 		Log("Wariancja: " + variance + "\n");
-		varLbl.setText(Double.toString(variance));
+		//varLbl.setText(Double.toString(variance));
 
 		double sd;
 		sd = Statistic.standardDeviantion(variance);
 		Log("Odchylenie standardowe: " + sd + "\n");
-		sdLbl.setText(Double.toString(sd));
+		//sdLbl.setText(Double.toString(sd));
 
 		double median;
 		median = StatUtils.percentile(data, 50);
 		Log("Mediana: " + median + "\n");
-		medLbl.setText(Double.toString(median));
+		//medLbl.setText(Double.toString(median));
 
 		double q1;
 		q1 = StatUtils.percentile(data, 25);
 		Log("Kwartyl Q1: " + q1 + "\n");
-		q1Lbl.setText(Double.toString(q1));
+		//q1Lbl.setText(Double.toString(q1));
 
 		double q3;
 		q3 = StatUtils.percentile(data, 75);
 		Log("Kwartyl Q3: " + q3 + "\n");
-		q3Lbl.setText(Double.toString(q3));
+		//q3Lbl.setText(Double.toString(q3));
 
 		double percentile;
 		percentile = StatUtils.percentile(data, 5);
 		Log("Percentyl 5%: " + percentile + "\n");
-		prcLbl.setText(Double.toString(percentile));
+		//prcLbl.setText(Double.toString(percentile));
 		
 	}
 	
@@ -269,7 +263,11 @@ public class ApplicationWindow {
 	
 	
 	
-	public static void Log(String s) {
-		System.out.print(s);
+	public void Log(String s) {
+		consolTextArea.append(s);
+		
 	}
+
+
+
 }
