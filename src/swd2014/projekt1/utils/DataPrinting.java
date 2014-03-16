@@ -47,6 +47,7 @@ public class DataPrinting {
 			{
 				buffer.append(matrix_tab[r][c] + ", ");
 			}
+			buffer.append("\n");
 			ta.append(buffer.toString());
 		}
 	}
