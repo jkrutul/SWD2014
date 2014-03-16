@@ -42,6 +42,7 @@ public class ApplicationWindow extends javax.swing.JFrame{
     
 
     public ApplicationWindow() {
+    	setResizable(false);
         initComponents();
     }
     
@@ -52,6 +53,7 @@ public class ApplicationWindow extends javax.swing.JFrame{
 
         jScrollPane1 = new javax.swing.JScrollPane();
         consolTextArea = new javax.swing.JTextArea();
+        consolTextArea.setLineWrap(true);
         open_file = new javax.swing.JButton();
         load_file = new javax.swing.JButton();
         calculate_file = new javax.swing.JButton();
@@ -118,7 +120,7 @@ public class ApplicationWindow extends javax.swing.JFrame{
         );
 
         pack();
-		loadData();
+		//loadData(); //powoduje NPE po spaczkowaniu mavenem
     }
     
 	public static void main(String[] args) {
@@ -267,7 +269,4 @@ public class ApplicationWindow extends javax.swing.JFrame{
 		consolTextArea.append(s);
 		
 	}
-
-
-
 }
