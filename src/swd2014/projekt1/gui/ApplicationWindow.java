@@ -5,8 +5,13 @@ package swd2014.projekt1.gui;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
+import java.util.List;
 
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JFileChooser;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -18,6 +23,8 @@ import swd2014.projekt1.utils.Converts;
 import swd2014.projekt1.utils.DataPrinting;
 import swd2014.projekt1.utils.Statistic;
 import swd2014.projekt1.utils.Utils;
+import swd2014.projekt1.xls.UniParser;
+import swd2014.projekt1.xls.XlsParseContainer;
 
 public class ApplicationWindow extends javax.swing.JFrame{
 
@@ -49,6 +56,26 @@ public class ApplicationWindow extends javax.swing.JFrame{
     
     private void initComponents() {
         fc = new JFileChooser();
+        FileFilter filter = new FileFilter() {
+			@Override
+			public String getDescription() {
+				return new String("Pliki txt/csv/xls");
+			}
+			
+			@Override
+			public boolean accept(File f) {
+				if(f.isDirectory())
+					return true;
+				else if(f.getName().endsWith(".txt"))
+					return true;
+				else if(f.getName().endsWith(".csv"))
+					return true;
+				else if(f.getName().endsWith(".xls"))
+					return true;
+				return false;
+			}
+		};
+        fc.setFileFilter(filter);
         
 
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -89,35 +116,35 @@ public class ApplicationWindow extends javax.swing.JFrame{
         });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(open_file)
-                        .addGap(55, 55, 55)
-                        .addComponent(load_file)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(calculate_file))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+        	layout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addGroup(layout.createParallelGroup(Alignment.LEADING)
+        				.addGroup(layout.createSequentialGroup()
+        					.addComponent(open_file)
+        					.addPreferredGap(ComponentPlacement.UNRELATED)
+        					.addComponent(load_file)
+        					.addPreferredGap(ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
+        					.addComponent(calculate_file))
+        				.addGroup(layout.createSequentialGroup()
+        					.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 366, GroupLayout.PREFERRED_SIZE)
+        					.addGap(0, 0, Short.MAX_VALUE)))
+        			.addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(open_file)
-                    .addComponent(load_file)
-                    .addComponent(calculate_file))
-                .addGap(0, 11, Short.MAX_VALUE))
+        	layout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 253, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.UNRELATED)
+        			.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+        				.addComponent(open_file)
+        				.addComponent(calculate_file)
+        				.addComponent(load_file))
+        			.addGap(0, 11, Short.MAX_VALUE))
         );
+        getContentPane().setLayout(layout);
 
         pack();
 		//loadData(); //powoduje NPE po spaczkowaniu mavenem
@@ -177,36 +204,64 @@ public class ApplicationWindow extends javax.swing.JFrame{
 
 
 
-	public void loadData(){
+	public void loadData() {
 		if ((file != null) && (!file.equals(""))) {
-			try {
-				cfr = new CsvFileReader(file, new CsvReadWriteSettings(",", true, hasColumnsNames));
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+
+			if (file.endsWith(new String(".txt"))
+					|| file.endsWith(new String(".csv"))) {
+
+				try {
+					cfr = new CsvFileReader(file, new CsvReadWriteSettings(",",
+							true, hasColumnsNames));
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+
+				if (cfr == null)
+					return;
+
+				m = cfr.getData_matrix();
+
+				if (hasColumnsNames) {
+					Log("\nNazwy kolumn (" + m.getnCols() + "):");
+
+					LinkedList<String> column_names = cfr.getColumNames();
+					for (String cName : column_names)
+						Log(cName);
+
+				}
+
+				Log("\nWiersze: (" + m.getnRows() + ")\n");
+
+				Log("\nPreferowanie najliczniejszych klas\n");
+				int class_attr[] = Utils.classAttribution(m.getColumn(0), 5);
+				m.appendColumn(Converts.convertToString(class_attr));
+				DataPrinting.printMatrix(m, consolTextArea);
+				drawChartForColumns(new int[] { 0, 1, 2, 3 });
+				calculateStatisticsForColumn(3);
+
 			}
-
-			if (cfr == null)
-				return;
-
-			m = cfr.getData_matrix();
-
-			if (hasColumnsNames) {
-				Log("\nNazwy kolumn (" + m.getnCols() + "):");
-
-				LinkedList<String> column_names = cfr.getColumNames();
-				for (String cName : column_names)
-					Log(cName);
-
+			else if (file.endsWith(new String(".xls")))
+			{
+				UniParser parser = new UniParser();
+				
+				XlsParseContainer result = parser.parse(file);
+				
+				m = result.getValues();
+				
+				Log("\nWiersze: (" + m.getnRows() + ")\n");
+				
+				Log("\nPreferowanie najliczniejszych klas\n");
+				int class_attr[] = Utils.classAttribution(m.getColumn(0), 5);
+				
+				m.appendColumn(Converts.convertToString(class_attr));
+				
+				DataPrinting.printMatrix(m, consolTextArea);
+				
+				drawChartForColumns(new int[] { 0, 1, 2, 3 });
+				
+				calculateStatisticsForColumn(3);
 			}
-
-			Log("\nWiersze: (" + m.getnRows() + ")\n");
-
-			Log("\nPreferowanie najliczniejszych klas\n");
-			int class_attr[] = Utils.classAttribution(m.getColumn(0), 5);
-			m.appendColumn(Converts.convertToString(class_attr));
-			DataPrinting.printMatrix(m, consolTextArea);
-			drawChartForColumns( new int[]{0,1,2,3} );
-			calculateStatisticsForColumn(3);
 		}
 	}
 	
