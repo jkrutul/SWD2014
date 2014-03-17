@@ -46,7 +46,7 @@ public class UniParser {
 		
 		Row row=sheet.getRow(sheet.getFirstRowNum());
 		
-		Matrix result = new Matrix( sheet.getLastRowNum() - sheet.getFirstRowNum() -1, row.getLastCellNum() - row.getFirstCellNum() + 1);
+		Matrix result = new Matrix( sheet.getLastRowNum() - sheet.getFirstRowNum() -1, row.getLastCellNum() - row.getFirstCellNum());
 		
 		if((sheet.getFirstRowNum()+1)<sheet.getLastRowNum())
 		{
