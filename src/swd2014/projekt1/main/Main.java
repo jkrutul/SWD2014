@@ -98,6 +98,9 @@ public class Main {
 		DataPrinting.printMatrix(m.data, m.getnRows(),m.getnCols());
 		
 */
+		
+
+		
 		DataPrinting.printMatrix(m);
 		Log("\nPreferowanie najliczniejszych klas\n");
 		int class_attr[] = Utils.classAttribution(m.getColumn(0),5);
@@ -110,7 +113,7 @@ public class Main {
 		
 		float mean;
 		mean = Statistic.mean(Converts.convertToFloat(m.getColumn(c)));
-		Log("�rednia: "+ mean+"\n");
+		Log("średnia: "+ mean+"\n");
 		
 		float variance;
 		variance = Statistic.variance(Converts.convertToFloat(m.getColumn(c)));
@@ -137,6 +140,22 @@ public class Main {
 		float percentile;
 		percentile = (float) Statistic.quantile(Converts.convertToFloat(m.getColumn(c)),5);
 		Log("percentyl 5%: "+ percentile+"\n");
+		
+		
+		Log("\nDyskretyzacja 3 kolumny \n");
+		int[] disc_tab = Utils.discretization(3, m.getnRows());
+		String[] s_tab = new String[m.getnRows()];
+		
+		int i=0;
+		for(int item : disc_tab)
+			s_tab[i++] = String.valueOf(item);
+		
+		DataPrinting.printVector(disc_tab);
+		m.appendColumn(s_tab);
+		
+		
+		Log("\nMacierz po dodaniu dyskretyzacji\n");
+		DataPrinting.printMatrix(m.data, m.getnRows(),m.getnCols());
 				
 	}
 	

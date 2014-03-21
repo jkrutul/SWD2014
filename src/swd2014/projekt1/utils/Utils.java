@@ -49,10 +49,10 @@ public class Utils {
 	}
 	
 	/***
-	 * Zwraca tablic� element�w o warto�ciach od 0 do (n/divideBy)
-	 * @param divideBy -  na il� cz�ci podzieli� zbi�r
-	 * @param n - liczba element�w zbioru
-	 * @return tablica liczb ca�kowitych o d�ugo�ci n
+	 * Zwraca tablicę elementów o wartosciach od 0 do (n/divideBy)
+	 * @param divideBy -  na ile częci podzielić zbiór
+	 * @param n - liczba elementów zbioru
+	 * @return tablica liczb całkowitych o długości n
 	 */
 	public static int[] discretization(int divideBy, int n){
 		if(divideBy<=0 || n<=0)
@@ -72,10 +72,7 @@ public class Utils {
 		
 		return tab;
 	}
-	
-	
-
-	
+		
 	
 
 	public static int getMaxVal(Integer [] tab){
@@ -147,6 +144,7 @@ public class Utils {
 	 * @return tablica klas przypisanym atrybutom
 	 */
 	public static int[] classAttribution(String[] values, int howManyClassAssign){
+		
 		if(values == null || values.length<=0)
 			return null;
 
@@ -163,7 +161,7 @@ public class Utils {
 		LinkedHashMap<String, Integer> sorted_map = sortMap(map);
 
 		int numberOfClasses = sorted_map.keySet().size();	// maksymalna liczba klas na kt�re mo�na podzieli� atrybuty
-		Main.Log("liczba klas na kt�re mo�na podzieli� zbi�r: " + numberOfClasses+"\n");
+		Main.Log("liczba klas na które można podzielić zbiór: " + numberOfClasses+"\n");
 		
 		Collection<String> keyset  = sorted_map.keySet();
 		String[] keySet = keyset.toArray(new String[numberOfClasses]);
@@ -225,7 +223,82 @@ public class Utils {
 	        return sorted_m;
 	}
 	
-
+	/* Funkcja rozdziela do tablic według podanych klas
+	 * 
+	 */
+	public static double[][] splitDataByClasses(double data[], int class_array[]){
+		if(data.length != class_array.length){
+			System.out.println("DATA SIZE:" +data.length + " CLASS: "+class_array.length);
+			return null;
+		}
+			
+		
+		// zliczam ile jest klas i ile każda ma elementów
+		LinkedHashMap<Integer, Integer> class_group = new LinkedHashMap<>();
+		LinkedList<double[]> split_list = new LinkedList<>();
+		
+		for(int c : class_array)
+			if(class_group.containsKey(c)){
+				int v = class_group.get(c);
+				class_group.put(c, ++v);
+			}
+			else
+				class_group.put(c, 1);
+		
+		
+		int class_count = class_group.size();
+		Integer [] keys = class_group.keySet().toArray(new Integer[class_count]);
+		LinkedList<LinkedList<Double>> ll = new LinkedList<>();
+		
+		for(Integer k : keys){
+			LinkedList<Double> ld = new LinkedList<>();
+			int index = 0;
+			for( int kca : class_array){
+				if(k.intValue() == kca ){
+					ld.add(data[index]);
+				}
+				index++;
+			}
+			
+			ll.add(ld);
+		}
+		
+		// convert to double[][]
+		Double [][] matrix_Double = new Double[ll.size()][];
+				
+		int index =0 ;
+		for(LinkedList<Double> ld : ll){
+			matrix_Double[index++] = ld.toArray(new Double[ld.size()]);
+		}
+		ll= null;
+		
+		double[][] d_ = Converts.convertDoubleArray(matrix_Double);	
+		return d_;
+		
+	}
+	
+	private static LinkedList<String> distingtValues(String data[]){
+		LinkedList<String> dsl = new LinkedList<>();
+		
+		for(String i : data)
+			if(!dsl.contains(i)){
+				dsl.add(i);
+			}
+		
+		return dsl;
+	}
+	
+	private static LinkedList<Integer> distingtValues(int data[]){
+		LinkedList<Integer> dsl = new LinkedList<>();
+		
+		for(int i : data)
+			if(!dsl.contains(i)){
+				dsl.add(i);
+			}
+		
+		return dsl;
+	}
+	
 }
 
 class ValueComparator implements Comparator<String> {

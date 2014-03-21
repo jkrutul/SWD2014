@@ -54,4 +54,31 @@ public class Converts {
 			
 	}
 	
+	public static int[] convertToInt(String[] numbers){
+		int[] ints = new int[numbers.length];
+		int i =0;
+		for(String s : numbers)
+			ints[i++] = Integer.valueOf(s);
+		
+		return ints;
+			
+	}
+	
+	public static double[][] convertDoubleArray(Double [][] matrix_Double){
+		int size = matrix_Double.length;
+		double [][] d_ = new double[size][];
+		
+		int i = 0;
+
+		for(Double ditems[] : matrix_Double){
+			d_[i] = new double[ditems.length];
+			int j = 0;
+			for(Double ditem : ditems){
+				d_[i][j++] = ditem.doubleValue();
+			}
+			i++;
+		}
+		return d_;
+	}
+	
 }

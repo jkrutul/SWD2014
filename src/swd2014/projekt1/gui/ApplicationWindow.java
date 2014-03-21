@@ -128,7 +128,7 @@ public class ApplicationWindow extends javax.swing.JFrame{
         					.addPreferredGap(ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
         					.addComponent(calculate_file))
         				.addGroup(layout.createSequentialGroup()
-        					.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 366, GroupLayout.PREFERRED_SIZE)
+        					.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 500, GroupLayout.PREFERRED_SIZE)
         					.addGap(0, 0, Short.MAX_VALUE)))
         			.addContainerGap())
         );
@@ -136,7 +136,7 @@ public class ApplicationWindow extends javax.swing.JFrame{
         	layout.createParallelGroup(Alignment.LEADING)
         		.addGroup(layout.createSequentialGroup()
         			.addContainerGap()
-        			.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 253, GroupLayout.PREFERRED_SIZE)
+        			.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 500, GroupLayout.PREFERRED_SIZE)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
         			.addGroup(layout.createParallelGroup(Alignment.BASELINE)
         				.addComponent(open_file)
@@ -151,6 +151,7 @@ public class ApplicationWindow extends javax.swing.JFrame{
     }
     
 	public static void main(String[] args) {
+		/*
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -167,7 +168,7 @@ public class ApplicationWindow extends javax.swing.JFrame{
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(ApplicationWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-
+*/
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new ApplicationWindow().setVisible(true);
@@ -237,6 +238,9 @@ public class ApplicationWindow extends javax.swing.JFrame{
 				int class_attr[] = Utils.classAttribution(m.getColumn(0), 5);
 				m.appendColumn(Converts.convertToString(class_attr));
 				DataPrinting.printMatrix(m, consolTextArea);
+				
+				Utils.splitDataByClasses(Converts.convertToDouble(m.getColumn(0)), Converts.convertToInt(m.getColumn(5)));
+				
 				drawChartForColumns(new int[] { 0, 1, 2, 3 });
 				calculateStatisticsForColumn(3);
 
@@ -251,7 +255,7 @@ public class ApplicationWindow extends javax.swing.JFrame{
 				
 				Log("\nWiersze: (" + m.getnRows() + ")\n");
 				
-				Log("\nPreferowanie najliczniejszych klas\n");
+				Log("\nPreferowanie najliczniejszych klas [max 5]\n");
 				int class_attr[] = Utils.classAttribution(m.getColumn(0), 5);
 				
 				m.appendColumn(Converts.convertToString(class_attr));
@@ -313,6 +317,17 @@ public class ApplicationWindow extends javax.swing.JFrame{
 		LinkedList<double[]> series = new LinkedList<>();
 		for(int c_index : column_indexes){
 			double[] s = Converts.convertToDouble(m.getColumn(c_index));
+			series.add(s);
+		}		
+		Charts.chartScatterPlot((XYSeriesCollection) Charts.createDataset(series));
+	}
+	
+	public static void drawChartForColumns(int[] column_indexes, double[][] data ) {
+		
+		
+		LinkedList<double[]> series = new LinkedList<>();
+		for(int c_index : column_indexes){
+			double[] s = data[c_index];
 			series.add(s);
 		}		
 		Charts.chartScatterPlot((XYSeriesCollection) Charts.createDataset(series));
