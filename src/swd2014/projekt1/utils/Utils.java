@@ -161,6 +161,7 @@ public class Utils {
 		LinkedHashMap<String, Integer> sorted_map = sortMap(map);
 
 		int numberOfClasses = sorted_map.keySet().size();	// maksymalna liczba klas na kt�re mo�na podzieli� atrybuty
+		howManyClassAssign = numberOfClasses;
 		Main.Log("liczba klas na które można podzielić zbiór: " + numberOfClasses+"\n");
 		
 		Collection<String> keyset  = sorted_map.keySet();

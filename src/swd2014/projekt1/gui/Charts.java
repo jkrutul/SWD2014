@@ -110,6 +110,25 @@ public class Charts {
 		
 	}
 	
+	public static XYDataset createDataset(double[][] x_series, double[][] y_series){
+
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		for(int i=0; i<x_series.length; i++){
+			double[] x_items = x_series[i];
+			double[] y_items = y_series[i];
+			
+			XYSeries ser = new XYSeries("series"+i);
+			for(int j=0; j<x_items.length; j++){
+				ser.add(x_items[j], y_items[j]);
+			}
+			dataset.addSeries(ser);
+		}
+		
+		
+		return dataset;
+		
+	}
+	
 
 	
 	

@@ -30,8 +30,7 @@ public class CsvFileReader {
 
 	}
 
-	public CsvFileReader(String path_to_file, CsvReadWriteSettings settings)
-			throws FileNotFoundException {
+	public CsvFileReader(String path_to_file, CsvReadWriteSettings settings){
 		this();
 		this.settings = settings;
 		read_csv_file(path_to_file);
@@ -45,8 +44,7 @@ public class CsvFileReader {
 	 * @return macierz string�w zawieraj�ca dane
 	 * @throws FileNotFoundException
 	 */
-	private String[][] read_csv_file(String path_to_file)
-			throws FileNotFoundException {
+	private String[][] read_csv_file(String path_to_file){
 		String delimeter;
 		boolean remove_white_spaces, first_row_have_columnames;
 
@@ -57,7 +55,12 @@ public class CsvFileReader {
 		File f = new File(path_to_file);
 		if (!f.exists())
 			return null;
-		Scanner scanner = new Scanner(f);
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(f);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 		String[] columnnames = null;
 
 		if (first_row_have_columnames) {
@@ -115,9 +118,6 @@ public class CsvFileReader {
 
 		}
 
-		
-
-
 		return matrix.data;
 	}
 
@@ -130,7 +130,15 @@ public class CsvFileReader {
 	}
 
 	public LinkedList<String> getColumNames() {
+		if(columNames != null && columNames.size()>0)
+			return columNames;
+		
+		columNames = new LinkedList<String>();
+		int size = this.matrix.getnCols();
+		for(int i=0; i<size; i++)
+			columNames.add("kolumna"+i);
 		return columNames;
+		
 	}
 
 	public Matrix getData_matrix() {

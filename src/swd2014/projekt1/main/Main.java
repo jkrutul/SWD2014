@@ -44,11 +44,9 @@ public class Main {
 		
 		CsvFileReader cfr = null;
 		Log("\nWczytanie zawarto�ci pliku do macierzy\n");
-		try {
+
 			cfr = new CsvFileReader(file, new CsvReadWriteSettings(",", true, hasColumnsNames));
- 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+
 		
 		if(cfr == null)
 			return;

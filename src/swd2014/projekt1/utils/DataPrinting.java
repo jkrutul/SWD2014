@@ -36,6 +36,7 @@ public class DataPrinting {
 	}
 	
 	public static void printMatrix(Matrix matrix, JTextArea ta) {
+		ta.append("Wypisanie zawartości macierzy\n");
 		
 		String[][] matrix_tab = matrix.getMatrix();
 		int rows, cols;
@@ -44,11 +45,11 @@ public class DataPrinting {
 		for (int r = 0; r < rows; r++) {
 			StringBuffer buffer=new StringBuffer();
 			for (int c = 0; c < cols; c++)
-			{
-				buffer.append(matrix_tab[r][c] + ", ");
-			}
+				buffer.append(matrix_tab[r][c] + " ");
+			
 			buffer.append("\n");
 			ta.append(buffer.toString());
+
 		}
 	}
 	
