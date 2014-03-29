@@ -2,7 +2,7 @@ package swd2014.projekt1.xls;
 
 import java.util.List;
 
-import swd2014.projekt1.main.Matrix;
+import swd2014.projekt1.models.Matrix;
 
 public class XlsParseContainer {
 	List<String> columnNames;

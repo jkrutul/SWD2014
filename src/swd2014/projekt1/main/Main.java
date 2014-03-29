@@ -30,6 +30,7 @@ import java.util.LinkedList;
 
 import swd2014.projekt1.csv.CsvFileReader;
 import swd2014.projekt1.csv.CsvReadWriteSettings;
+import swd2014.projekt1.models.Matrix;
 import swd2014.projekt1.utils.Converts;
 import swd2014.projekt1.utils.DataPrinting;
 import swd2014.projekt1.utils.Statistic;

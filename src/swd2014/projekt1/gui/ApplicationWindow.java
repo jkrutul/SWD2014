@@ -1,14 +1,20 @@
 package swd2014.projekt1.gui;
 
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.LinkedList;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
@@ -18,23 +24,14 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import swd2014.projekt1.csv.CsvFileReader;
 import swd2014.projekt1.csv.CsvReadWriteSettings;
-import swd2014.projekt1.main.Matrix;
+import swd2014.projekt1.models.Matrix;
+import swd2014.projekt1.models.Point;
 import swd2014.projekt1.utils.Converts;
 import swd2014.projekt1.utils.DataPrinting;
 import swd2014.projekt1.utils.Statistic;
 import swd2014.projekt1.utils.Utils;
 import swd2014.projekt1.xls.UniParser;
 import swd2014.projekt1.xls.XlsParseContainer;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.GroupLayout;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
-import java.awt.Font;
 
 public class ApplicationWindow extends JFrame {
 
@@ -389,7 +386,7 @@ public class ApplicationWindow extends JFrame {
         getContentPane().setLayout(layout);
 
         pack();
-
+        
 	}
 
 	
@@ -519,13 +516,38 @@ public class ApplicationWindow extends JFrame {
 		percentile = StatUtils.percentile(data, 5);
 		Log("Percentyl 5%: " + percentile + "\n");
 		// prcLbl.setText(Double.toString(percentile));
+		
+		Point p = new Point(23,43);
+		
+
+		
+		
 	}
 	
 	private void drawChartActionPerformed(java.awt.event.ActionEvent evt){
 		int x_col = xComboBox.getSelectedIndex();
 		int y_col = yComboBox.getSelectedIndex();
 		int g_col = groupComboBox.getSelectedIndex();
+		
+		
 		drawChart(x_col, y_col, g_col);
+		/*
+		double[] xs = Converts.convertToDouble(m.getColumn(x_col));
+		double[] ys = Converts.convertToDouble(m.getColumn(y_col));
+		Point[] points = Utils.createPoints(xs, ys);
+		*/
+		Point from, to;
+		from =  new Point(1, 1);
+		to = new Point(10,20);
+		
+		double euclideandist = Statistic.euclideanDistance(from, to);
+		double manhattandist = Statistic.manhattaDistance(from, to);
+		double chebyshevdist = Statistic.chebyshevDistance(from, to);
+		
+		Log("Distance from point:"+from+ " to point:" +to+"\n");
+		Log("euclidean: "+ euclideandist+"\n");
+		Log("manhattan: "+ manhattandist+ "\n");
+		Log("chebyshew: "+ chebyshevdist+ "\n" );
 	}
 	
 	//FUNKCJE WYWOŁYWANE PRZEZ BUTTONY -- KONIEC

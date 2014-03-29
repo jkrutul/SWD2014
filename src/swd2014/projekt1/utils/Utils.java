@@ -1,11 +1,10 @@
 package swd2014.projekt1.utils;
 
+
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,6 +17,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import swd2014.projekt1.main.Main;
+import swd2014.projekt1.models.Point;
 
 public class Utils {
 	
@@ -298,6 +298,18 @@ public class Utils {
 			}
 		
 		return dsl;
+	}
+	
+	public static Point[] createPoints(double xs[], double ys[]){
+		if(xs.length != ys.length)
+			return null;
+		
+		Point[] points = new Point[xs.length];
+		for(int i=0; i < xs.length; i++){
+			points[i] = new Point(xs[i], ys[i]);
+		}
+		
+		return points;
 	}
 	
 }

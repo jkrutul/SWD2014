@@ -1,5 +1,10 @@
 package swd2014.projekt1.utils;
 
+import org.apache.commons.math3.stat.correlation.Covariance;
+
+import swd2014.projekt1.models.Point;
+
+
 public class Statistic {
 	
 	
@@ -92,6 +97,60 @@ public class Statistic {
 		double t = (percent/100) * (data.length-1);
 		int i = (int) t;
 		return (i+1-t)*data[i] + (t-i)* data[i+1];
+	}
+	
+	public static double euclideanDistance(Point from, Point to){
+		double distance=0;
+		distance = Math.pow((from.getX() - to.getX()), 2)+ Math.pow((from.getY()-to.getY()), 2);
+		distance = Math.sqrt(distance);
+		return distance;
+	}
+	
+	public static double manhattaDistance(Point from, Point to){
+		double distance=0;
+		distance = Math.abs(from.getX() - from.getY()) + Math.abs(to.getX() - to.getY());
+		return distance;
+	}
+	
+	public static double chebyshevDistance(Point from, Point to){
+		double distance = 0;
+		distance = Math.max(Math.abs(from.getX()-to.getX()), Math.abs(from.getY()- from.getY()));
+		return distance;
+	}
+	
+	
+	
+	public static double[] euclideanDistance( Point from, Point[] to){
+		double[] distance = new double[to.length];
+		int i=0;
+		for(Point p : to ){
+			distance[i++] =euclideanDistance(from, p);
+		}
+		
+		return distance;
+	}
+	
+	public static double[] manhattanDistance( Point from, Point[] to){
+		double[] distance = new double[to.length];
+		int i=0;
+		for(Point p : to ){
+			distance[i++] = manhattaDistance(from, p);
+		}
+		
+		return distance;
+	}
+	
+	public static double[] chebyshevDistance(Point from, Point[] to){
+		double[] distance = new double[to.length];
+		int i=0;
+		for(Point p : to ){
+			distance[i++] = chebyshevDistance(from, p);
+		}
+		return distance;
+	}
+	
+	public static void mahanalobisDistance(double a[], double[] b){
+		double cov = new Covariance().covariance(a, b);
 	}
 	
 	

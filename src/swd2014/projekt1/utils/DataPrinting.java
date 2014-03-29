@@ -4,7 +4,7 @@ import java.util.Map;
 
 import javax.swing.JTextArea;
 
-import swd2014.projekt1.main.Matrix;
+import swd2014.projekt1.models.Matrix;
 
 public class DataPrinting {
 /**

@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-import swd2014.projekt1.main.Matrix;
+import swd2014.projekt1.models.Matrix;
 import swd2014.projekt1.utils.DataPrinting;
 
 public class CsvFileReader {

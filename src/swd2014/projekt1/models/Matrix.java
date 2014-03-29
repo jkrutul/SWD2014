@@ -1,4 +1,4 @@
-package swd2014.projekt1.main;
+package swd2014.projekt1.models;
 
 import java.util.Arrays;
 
