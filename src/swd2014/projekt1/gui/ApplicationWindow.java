@@ -2,21 +2,32 @@ package swd2014.projekt1.gui;
 
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
+import java.security.KeyException;
 import java.util.LinkedList;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.math3.stat.StatUtils;
@@ -45,13 +56,27 @@ public class ApplicationWindow extends JFrame {
     // Variables declaration - do not modify  
 	private javax.swing.JButton calculate_file;
 	private javax.swing.JScrollPane jScrollPane1;
-	private javax.swing.JTextArea consolTextArea;
+	public static javax.swing.JTextArea consolTextArea;
 	private javax.swing.JButton reload_fileButton, open_fileButton, drawChartButton, filesaveButton;
-    private javax.swing.JComboBox colSelectComboBox, groupComboBox;
+    private static javax.swing.JComboBox colSelectComboBox;
+
+	private static javax.swing.JComboBox groupComboBox;
     private javax.swing.JCheckBox getColNamesCheckBox;
     private javax.swing.JLabel jLabel1, jLabel2, jLabel3,jLabel4,jLabel5;
     private javax.swing.JPanel jPanel1,jPanel2,statisticPanel,chartPanel;
-    private javax.swing.JComboBox xComboBox, yComboBox, zComboBox;
+    private static javax.swing.JComboBox xComboBox;
+
+	private static javax.swing.JComboBox yComboBox;
+
+	private static javax.swing.JComboBox zComboBox;
+    
+    private JMenu group_menu, file_menu, disp_menu;
+    private JMenuItem pref_class_mi, save_toFile_mi, close_mi, open_file_mi, mDispl_mi;
+    
+	static TableGUI tg;
+    
+
+    
     // End of variables declaration      
 	private JFileChooser fc;
 	private JTextField delimeterTF;
@@ -99,6 +124,85 @@ public class ApplicationWindow extends JFrame {
 	 * Initialize the contents of the frame.
 	 */
 	private void initializeGUI() {
+		/* MENU */
+		
+	    JMenuBar menuBar = new JMenuBar();
+	    
+	    group_menu = new JMenu("Grupowanie");
+		file_menu = new JMenu("Plik");	
+		disp_menu = new JMenu("Wyświetl");
+	    
+	    save_toFile_mi = new JMenuItem("Zapisz do pliku");
+	    save_toFile_mi.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveMatrixActionPerformed(e);
+				
+			}
+		});
+	    
+		//group_menu.setMnemonic(KeyEvent.VK_G);		
+		pref_class_mi = new JMenuItem("Preferowanie najliczniejszych klas");
+		pref_class_mi.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PopupWindows.displayClassPref();
+				
+			}
+		});
+			
+		close_mi = new JMenuItem("Zamknij");
+		close_mi.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		
+		open_file_mi = new JMenuItem("Otwórz plik");
+		open_file_mi.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				 open_fileButtonActionPerformed(e);
+			}
+		});
+		
+
+		mDispl_mi = new JMenuItem("Wypisz zawartość macierzy");
+		mDispl_mi.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				DataPrinting.printMatrix(m, consolTextArea);
+			}
+		});
+		
+		
+		
+		group_menu.add(pref_class_mi);
+		
+		file_menu.add(open_file_mi);
+		file_menu.add(save_toFile_mi);
+		file_menu.addSeparator();
+		file_menu.add(close_mi);
+
+		
+		disp_menu.add(mDispl_mi);
+		
+		menuBar.add(file_menu);
+		menuBar.add(group_menu);
+		menuBar.add(disp_menu);
+
+		
+
+		
+		
+		
+		
 		this.setLocationRelativeTo(null);
 		 fc = new JFileChooser();
 	     FileFilter filter = new FileFilter() {
@@ -163,6 +267,16 @@ public class ApplicationWindow extends JFrame {
                 open_fileButtonActionPerformed(evt);
             }
         });
+        
+        filesaveButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveMatrixActionPerformed(e);
+			}
+		});
+        
+        
 
         getColNamesCheckBox.setText("pobierz kolumny");
         getColNamesCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -357,6 +471,9 @@ public class ApplicationWindow extends JFrame {
                 .addComponent(drawChartButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+        
+        JPanel panel = new JPanel();
+        panel.setBorder(new TitledBorder(null, "Preferowanie najliczniejszych klass", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         layout.setHorizontalGroup(
@@ -368,7 +485,8 @@ public class ApplicationWindow extends JFrame {
         				.addGroup(layout.createParallelGroup(Alignment.TRAILING)
         					.addComponent(chartPanel, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE)
         					.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE))
-        				.addComponent(statisticPanel, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE))
+        				.addComponent(statisticPanel, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE))
         			.addContainerGap())
         );
         layout.setVerticalGroup(
@@ -380,12 +498,15 @@ public class ApplicationWindow extends JFrame {
         			.addComponent(statisticPanel, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
         			.addPreferredGap(ComponentPlacement.RELATED)
         			.addComponent(chartPanel, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
-        			.addContainerGap(114, Short.MAX_VALUE))
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(panel, GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
+        			.addContainerGap())
         		.addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
         );
         getContentPane().setLayout(layout);
 
         pack();
+        this.setJMenuBar(menuBar);
         
 	}
 
@@ -427,9 +548,11 @@ public class ApplicationWindow extends JFrame {
 				}
 				
 				columNamesArray = cfr.getColumNames().toArray(new String[cfr.getColumNames().size()]);
+				m.setColumnNames(columNamesArray);
 				setComboBoxModel(columNamesArray);
 				
-				TableGUI tg = new TableGUI(columNamesArray, m.data);
+				tg = new TableGUI(columNamesArray, m.data);
+				
 				Log("\nWiersze: (" + m.getnRows() + ")\n");
 				DataPrinting.printMatrix(m, consolTextArea);
 				enable_disableButtons(true);
@@ -550,6 +673,13 @@ public class ApplicationWindow extends JFrame {
 		Log("chebyshew: "+ chebyshevdist+ "\n" );
 	}
 	
+	private void saveMatrixActionPerformed(ActionEvent evt){
+	    File path_to_project_dir = new File(System.getProperty("user.dir"));
+		String filename = JOptionPane.showInputDialog(null, "Podaj nazwę pliku", "Zapis macierz do pliku",1);
+		File save_file = new File(path_to_project_dir.getAbsolutePath()+File.separator+filename+".csv");
+		Utils.saveMatrixToFile(m, save_file, "plik z programu \n SWD2014");
+	}
+	
 	//FUNKCJE WYWOŁYWANE PRZEZ BUTTONY -- KONIEC
 
 
@@ -561,7 +691,8 @@ public class ApplicationWindow extends JFrame {
 			double[] s = Converts.convertToDouble(m.getColumn(c_index));
 			series.add(s);
 		}
-		Charts.chartScatterPlot((XYSeriesCollection) Charts.createDataset(series));
+		Charts.chartScatterPlot((XYSeriesCollection) Charts.createDataset(series), 		"x", "y", "xy");
+		
 	}
 
 	public static void drawChart(int x_column, int y_column, int groupBy ){
@@ -575,8 +706,16 @@ public class ApplicationWindow extends JFrame {
 		double[][] y_grouped = Utils.splitDataByClasses(y_data, class_array);
 		
 		
+		String[] col_names = m.getColumnNames();
+		String x_title ="x", y_title="y", title="xy";
 		
-		Charts.chartScatterPlot((XYSeriesCollection) Charts.createDataset(x_grouped, y_grouped));
+		if(col_names.length>0){
+			x_title = col_names[x_column];
+			y_title = col_names[y_column];
+			
+		}
+		
+		Charts.chartScatterPlot((XYSeriesCollection) Charts.createDataset(x_grouped, y_grouped), x_title, y_title, title);
 		
 		
 	}
@@ -588,8 +727,7 @@ public class ApplicationWindow extends JFrame {
 			double[] s = data[c_index];
 			series.add(s);
 		}
-		Charts.chartScatterPlot((XYSeriesCollection) Charts
-				.createDataset(series));
+		Charts.chartScatterPlot((XYSeriesCollection) Charts.createDataset(series),"x", "y", "xy");
 	}
 
 	public void Log(String s) {
@@ -614,10 +752,18 @@ public class ApplicationWindow extends JFrame {
         jLabel5.setEnabled(enable);
 		reload_fileButton.setEnabled(enable);
         filesaveButton.setEnabled(enable);
-		
+        
+        //    private JMenu group_menu, file_menu, disp_menu;
+       // private JMenuItem pref_class_mi, close_mi, open_file_mi, mDispl_mi;
+        
+        disp_menu.setEnabled(enable);
+        group_menu.setEnabled(enable);
+        save_toFile_mi.setEnabled(enable);
+        
+        
 	}
 	
-	private void setComboBoxModel(String[] items){
+	private  static void setComboBoxModel(String[] items){
 		if(items==null)
 			items = new String[]{"1,2,3,4,5,6"};
 	//	DefaultComboBoxModel<?> dcmb = new DefaultComboBoxModel(items);
@@ -627,7 +773,137 @@ public class ApplicationWindow extends JFrame {
 		yComboBox.setModel(new DefaultComboBoxModel(items));
 		zComboBox.setModel(new DefaultComboBoxModel(items));
 		groupComboBox.setModel(new DefaultComboBoxModel(items));
-
-
 	}
+	
+	public static void dataSetChanged(){
+		setComboBoxModel(m.getColumnNames());
+		if(tg!=null)
+			tg.dispose();
+		tg = new TableGUI(m.getColumnNames(), m.data);
+		
+	}
+	
+	private static class PopupWindows{
+		
+		public static void displayClassPref(){
+			final JFrame classPrefFrame = new JFrame("Preferowanie najliczniejszych klass");
+		    javax.swing.JButton cancelBtn;
+		    final javax.swing.JComboBox column_selectCbx;
+		    javax.swing.JButton confirmBtn;
+		    final javax.swing.JTextField how_many_classTfld;
+		    javax.swing.JLabel jLabel1;
+		    javax.swing.JLabel jLabel2;
+		    javax.swing.JPanel jPanel1;
+		    
+	        jPanel1 = new javax.swing.JPanel();
+	        jLabel1 = new javax.swing.JLabel();
+	        column_selectCbx = new javax.swing.JComboBox();
+	        jLabel2 = new javax.swing.JLabel();
+	        how_many_classTfld = new javax.swing.JTextField();
+	        confirmBtn = new javax.swing.JButton();
+	        cancelBtn = new javax.swing.JButton();
+
+	        classPrefFrame.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+	        jLabel1.setText("kolumna:");
+	        column_selectCbx.setModel(new javax.swing.DefaultComboBoxModel( m.getColumnNames()));
+
+	        jLabel2.setText("liczba klas:");
+
+	        how_many_classTfld.setText("3");
+	       
+
+	        confirmBtn.setText("ok");
+	        confirmBtn.addActionListener(new java.awt.event.ActionListener() {
+	            public void actionPerformed(java.awt.event.ActionEvent evt) {
+	            	int liczba_klas = Integer.parseInt(how_many_classTfld.getText());
+	            	int wybrana_kolumna = column_selectCbx.getSelectedIndex();
+	            	String newColName = (String) column_selectCbx.getSelectedItem() + "_classes";
+	            	
+	            	//m.getColumn(wybrana_kolumna);
+
+	            	int[] kolumnaKlas = Utils.classAttribution(m.getColumn(wybrana_kolumna), liczba_klas);
+	            	m.appendColumn(Converts.convertToString(kolumnaKlas), newColName);
+	            	dataSetChanged();
+	            	
+	            	
+	            	DataPrinting.printMatrix(m, consolTextArea);
+	                //confirmBtnActionPerformed(evt);
+	            	classPrefFrame.dispose();
+	            }
+	        });
+
+	        cancelBtn.setText("Anuluj");
+	        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
+	            public void actionPerformed(java.awt.event.ActionEvent evt) {
+	                classPrefFrame.dispose();
+	            }
+	        });
+
+	        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+	        jPanel1.setLayout(jPanel1Layout);
+	        jPanel1Layout.setHorizontalGroup(
+	            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addGroup(jPanel1Layout.createSequentialGroup()
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+	                    .addComponent(cancelBtn)
+	                    .addGroup(jPanel1Layout.createSequentialGroup()
+	                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	                            .addGroup(jPanel1Layout.createSequentialGroup()
+	                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	                                    .addGroup(jPanel1Layout.createSequentialGroup()
+	                                        .addGap(4, 4, 4)
+	                                        .addComponent(confirmBtn))
+	                                    .addGroup(jPanel1Layout.createSequentialGroup()
+	                                        .addContainerGap()
+	                                        .addComponent(jLabel1)))
+	                                .addGap(10, 10, 10))
+	                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+	                                .addComponent(jLabel2)
+	                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+	                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	                            .addComponent(how_many_classTfld, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                            .addComponent(column_selectCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))))
+	                .addGap(0, 11, Short.MAX_VALUE))
+	        );
+	        jPanel1Layout.setVerticalGroup(
+	            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addGroup(jPanel1Layout.createSequentialGroup()
+	                .addContainerGap()
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                    .addComponent(column_selectCbx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                    .addComponent(jLabel2)
+	                    .addComponent(how_many_classTfld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                    .addComponent(cancelBtn)
+	                    .addComponent(confirmBtn))
+	                .addContainerGap())
+	        );
+
+	        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(classPrefFrame.getContentPane());
+	        classPrefFrame.getContentPane().setLayout(layout);
+	        layout.setHorizontalGroup(
+	            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+	        );
+	        layout.setVerticalGroup(
+	            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+	        );
+
+	        classPrefFrame.pack();
+	        
+	        java.awt.EventQueue.invokeLater(new Runnable() {
+	            public void run() {
+	                classPrefFrame.setVisible(true);
+	            }
+	        });
+		    
+		    
+		}}
+			
+	
 }

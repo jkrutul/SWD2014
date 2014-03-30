@@ -2,9 +2,12 @@ package swd2014.projekt1.models;
 
 import java.util.Arrays;
 
+import swd2014.projekt1.utils.Utils;
+
 public class Matrix {
 	public String[][] data;
 	private int nRows = 0, nCols = 0;
+	private String[] columnNames;
 
 	public Matrix(int rows, int cols) {
 		data = new String[rows][cols];
@@ -33,6 +36,14 @@ public class Matrix {
 		String[][] newsr = Arrays.copyOf(data, data.length+1);
 		this.data = newsr;
 		return newsr;
+	}
+	
+	public String[][] appendColumn(String[] column, String columnName){
+		Object[] objectArray = Utils.appendValue(this.columnNames, columnName);
+		
+		this.columnNames = Arrays.copyOf(objectArray, objectArray.length, String[].class);
+
+		return appendColumn(column);
 	}
 	
 	public String[][] appendColumn(String[] column){
@@ -93,6 +104,14 @@ public class Matrix {
 
 	public void setnCols(int nCols) {
 		this.nCols = nCols;
+	}
+
+	public String[] getColumnNames() {
+		return columnNames;
+	}
+
+	public void setColumnNames(String[] columnNames) {
+		this.columnNames = columnNames;
 	}
 
 }

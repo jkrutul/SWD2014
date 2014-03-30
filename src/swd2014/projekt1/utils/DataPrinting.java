@@ -37,6 +37,13 @@ public class DataPrinting {
 	
 	public static void printMatrix(Matrix matrix, JTextArea ta) {
 		ta.append("Wypisanie zawartości macierzy\n");
+		String[] columnNames = matrix.getColumnNames();
+		if(columnNames.length>0){
+			ta.append("Nazwy kolumn: ");
+			for(String col_n :columnNames)
+				ta.append(col_n+", ");
+			ta.append("\n");
+		}
 		
 		String[][] matrix_tab = matrix.getMatrix();
 		int rows, cols;

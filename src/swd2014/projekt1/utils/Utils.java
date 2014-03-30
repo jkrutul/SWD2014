@@ -2,9 +2,14 @@ package swd2014.projekt1.utils;
 
 
 import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,6 +22,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import swd2014.projekt1.main.Main;
+import swd2014.projekt1.models.Matrix;
 import swd2014.projekt1.models.Point;
 
 public class Utils {
@@ -144,7 +150,7 @@ public class Utils {
 	 * @return tablica klas przypisanym atrybutom
 	 */
 	public static int[] classAttribution(String[] values, int howManyClassAssign){
-		
+		howManyClassAssign--;
 		if(values == null || values.length<=0)
 			return null;
 
@@ -161,8 +167,10 @@ public class Utils {
 		LinkedHashMap<String, Integer> sorted_map = sortMap(map);
 
 		int numberOfClasses = sorted_map.keySet().size();	// maksymalna liczba klas na kt�re mo�na podzieli� atrybuty
-		howManyClassAssign = numberOfClasses;
-		Main.Log("liczba klas na które można podzielić zbiór: " + numberOfClasses+"\n");
+		if(howManyClassAssign>numberOfClasses)
+			howManyClassAssign = numberOfClasses;
+		//Main.Log("liczba klas na które można podzielić zbiór: " + numberOfClasses+"\n");
+		
 		
 		Collection<String> keyset  = sorted_map.keySet();
 		String[] keySet = keyset.toArray(new String[numberOfClasses]);
@@ -311,7 +319,56 @@ public class Utils {
 		
 		return points;
 	}
+
+	public static Object[] appendValue(String[] obj, Object newObj) {
+		 
+		ArrayList<Object> temp = new ArrayList<Object>(Arrays.asList(obj));
+		temp.add(newObj);
+		return temp.toArray();
+
+	}
 	
+	public static void saveMatrixToFile(Matrix m, File file, String comment){
+		
+		String[] columnnames = m.getColumnNames();
+		String[][] matrix_data = m.getMatrix();
+		
+		String content = new String();
+		if(comment.length()>0){
+			comment = comment.replaceAll("\n", "\n#");
+			comment+="\n";
+			comment="#"+comment;			
+			content+=comment;
+					
+		}
+
+		for(String colname : columnnames){
+			content+=colname+",";
+		}
+		
+		content+="\n";
+		
+		for(String[] row : matrix_data){
+			for(String attr : row)
+				content+=attr+",";
+			content+="\n";
+		}
+		
+		try {
+			 
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+ 
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(content);
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
 
 class ValueComparator implements Comparator<String> {
@@ -330,3 +387,4 @@ class ValueComparator implements Comparator<String> {
         } // returning 0 would merge keys
     }
 }
+

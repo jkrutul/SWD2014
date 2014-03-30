@@ -25,8 +25,8 @@ public class Charts {
 
 	}
 	
-	public static void chartScatterPlot(XYSeriesCollection dataset){
-		JFreeChart chart = ChartFactory.createScatterPlot("title", "xAxisLabel", "yAxisLabel", dataset, PlotOrientation.VERTICAL, true, true, false);
+	public static void chartScatterPlot(XYSeriesCollection dataset, String xAxisLabel, String yAxisLabel, String title){
+		JFreeChart chart = ChartFactory.createScatterPlot(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
 		displayChart(chart);
 	}
 	
@@ -117,7 +117,7 @@ public class Charts {
 			double[] x_items = x_series[i];
 			double[] y_items = y_series[i];
 			
-			XYSeries ser = new XYSeries("series"+i);
+			XYSeries ser = new XYSeries("klasa"+i);
 			for(int j=0; j<x_items.length; j++){
 				ser.add(x_items[j], y_items[j]);
 			}
