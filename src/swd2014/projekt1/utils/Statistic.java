@@ -106,7 +106,7 @@ public class Statistic {
 		return distance;
 	}
 	
-	public static double manhattaDistance(Point from, Point to){
+	public static double manhattanDistance(Point from, Point to){
 		double distance=0;
 		distance = Math.abs(from.getX() - from.getY()) + Math.abs(to.getX() - to.getY());
 		return distance;
@@ -134,7 +134,7 @@ public class Statistic {
 		double[] distance = new double[to.length];
 		int i=0;
 		for(Point p : to ){
-			distance[i++] = manhattaDistance(from, p);
+			distance[i++] = manhattanDistance(from, p);
 		}
 		
 		return distance;

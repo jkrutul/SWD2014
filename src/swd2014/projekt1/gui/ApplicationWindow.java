@@ -4,10 +4,10 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.File;
-import java.security.KeyException;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.ListIterator;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -22,6 +22,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
@@ -30,12 +32,15 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
+import org.apache.commons.math3.analysis.function.Log;
 import org.apache.commons.math3.stat.StatUtils;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import swd2014.projekt1.csv.CsvFileReader;
 import swd2014.projekt1.csv.CsvReadWriteSettings;
+import swd2014.projekt1.models.ClassModel;
 import swd2014.projekt1.models.Matrix;
+import swd2014.projekt1.models.Neighborns;
 import swd2014.projekt1.models.Point;
 import swd2014.projekt1.utils.Converts;
 import swd2014.projekt1.utils.DataPrinting;
@@ -71,7 +76,7 @@ public class ApplicationWindow extends JFrame {
 	private static javax.swing.JComboBox zComboBox;
     
     private JMenu group_menu, file_menu, disp_menu;
-    private JMenuItem pref_class_mi, save_toFile_mi, close_mi, open_file_mi, mDispl_mi;
+    private JMenuItem pref_class_mi, save_toFile_mi, close_mi, open_file_mi, mDispl_mi, knn_mi;
     
 	static TableGUI tg;
     
@@ -152,6 +157,15 @@ public class ApplicationWindow extends JFrame {
 				
 			}
 		});
+		
+		
+		knn_mi = new JMenuItem("Klasyfikacja metodą knn");
+		knn_mi.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {	
+				PopupWindows.displayKnn();
+			}
+		});
 			
 		close_mi = new JMenuItem("Zamknij");
 		close_mi.addActionListener(new ActionListener() {
@@ -184,6 +198,7 @@ public class ApplicationWindow extends JFrame {
 		
 		
 		group_menu.add(pref_class_mi);
+		group_menu.add(knn_mi);
 		
 		file_menu.add(open_file_mi);
 		file_menu.add(save_toFile_mi);
@@ -658,19 +673,20 @@ public class ApplicationWindow extends JFrame {
 		double[] xs = Converts.convertToDouble(m.getColumn(x_col));
 		double[] ys = Converts.convertToDouble(m.getColumn(y_col));
 		Point[] points = Utils.createPoints(xs, ys);
-		*/
+		
 		Point from, to;
 		from =  new Point(1, 1);
 		to = new Point(10,20);
 		
 		double euclideandist = Statistic.euclideanDistance(from, to);
-		double manhattandist = Statistic.manhattaDistance(from, to);
+		double manhattandist = Statistic.manhattanDistance(from, to);
 		double chebyshevdist = Statistic.chebyshevDistance(from, to);
 		
 		Log("Distance from point:"+from+ " to point:" +to+"\n");
 		Log("euclidean: "+ euclideandist+"\n");
 		Log("manhattan: "+ manhattandist+ "\n");
 		Log("chebyshew: "+ chebyshevdist+ "\n" );
+		*/
 	}
 	
 	private void saveMatrixActionPerformed(ActionEvent evt){
@@ -730,7 +746,7 @@ public class ApplicationWindow extends JFrame {
 		Charts.chartScatterPlot((XYSeriesCollection) Charts.createDataset(series),"x", "y", "xy");
 	}
 
-	public void Log(String s) {
+	public static void Log(String s) {
 		consolTextArea.append(s);
 
 	}
@@ -903,7 +919,381 @@ public class ApplicationWindow extends JFrame {
 	        });
 		    
 		    
-		}}
+		}
+		
+	
+		
+		public static void displayKnn(){
+		    JButton assign_classes, read_fromFileBtn;
+		    final JTextArea classesTextArea;
+			final JTextArea dataTxtArea;
+		    final JComboBox cb_x_select;
+			final JComboBox cb_y_select;
+			final JComboBox knn_method_cb;
+			final JComboBox cb_decision_class;
+		    JLabel jLabel1, jLabel2,jLabel3, jLabel5, jLabel4;
+		    JPanel jPanel1,jPanel2,jPanel3;
+		    JScrollPane jScrollPane1,jScrollPane2;
+		    final JTextField tv_elements;
+
+			final JFrame knn_frame = new JFrame("KNN");
 			
+			
+			jPanel1 = new javax.swing.JPanel();
+	        knn_method_cb = new javax.swing.JComboBox();
+	        jLabel1 = new javax.swing.JLabel();
+	        jLabel2 = new javax.swing.JLabel();
+	        cb_x_select = new javax.swing.JComboBox();
+	        jLabel3 = new javax.swing.JLabel();
+	        cb_y_select = new javax.swing.JComboBox();
+	        cb_decision_class = new JComboBox();
+	        jPanel2 = new javax.swing.JPanel();
+	        jScrollPane1 = new javax.swing.JScrollPane();
+	        dataTxtArea = new javax.swing.JTextArea();
+	        read_fromFileBtn = new javax.swing.JButton();
+	        jPanel3 = new javax.swing.JPanel();
+	        assign_classes = new javax.swing.JButton();
+	        jScrollPane2 = new javax.swing.JScrollPane();
+	        classesTextArea = new javax.swing.JTextArea();
+	        tv_elements = new JTextField();
+	        jLabel5 = new JLabel();
+	        jLabel4 = new JLabel();
+
+	        knn_frame.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+	        knn_method_cb.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "odległość euklidesowa", "metryka manhattan", "metryka nieskończoności" }));
+
+	        jLabel1.setText("metoda klasyfikacji:");
+
+	        jLabel2.setText("oś X:");
+
+	        cb_x_select.setModel(new javax.swing.DefaultComboBoxModel(m.getColumnNames()));
+
+	        jLabel3.setText("oś Y:");
+
+	        cb_y_select.setModel(new javax.swing.DefaultComboBoxModel(m.getColumnNames()));
+
+	        jLabel5.setText("klasa decyzyjna:");
+
+	        tv_elements.setText("3");
+
+	        jLabel4.setText("liczba sąsiadów:");
+
+	        cb_decision_class.setModel(new javax.swing.DefaultComboBoxModel(m.getColumnNames()));
+
+	        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+	        jPanel1.setLayout(jPanel1Layout);
+	        jPanel1Layout.setHorizontalGroup(
+	            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addGroup(jPanel1Layout.createSequentialGroup()
+	                .addContainerGap()
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+	                        .addComponent(jLabel1)
+	                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	                        .addComponent(knn_method_cb, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                    .addGroup(jPanel1Layout.createSequentialGroup()
+	                        .addComponent(jLabel2)
+	                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	                        .addComponent(cb_x_select, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+	                        .addComponent(jLabel3)
+	                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	                        .addComponent(cb_y_select, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                    .addGroup(jPanel1Layout.createSequentialGroup()
+	                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	                            .addComponent(jLabel5)
+	                            .addComponent(jLabel4))
+	                        .addGap(18, 18, 18)
+	                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	                            .addGroup(jPanel1Layout.createSequentialGroup()
+	                                .addComponent(tv_elements, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                                .addGap(0, 0, Short.MAX_VALUE))
+	                            .addComponent(cb_decision_class, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+	                .addContainerGap())
+	        );
+	        jPanel1Layout.setVerticalGroup(
+	            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addGroup(jPanel1Layout.createSequentialGroup()
+	                .addContainerGap()
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                    .addComponent(knn_method_cb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                    .addComponent(jLabel1))
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                    .addComponent(jLabel2)
+	                    .addComponent(cb_x_select, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                    .addComponent(cb_y_select, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                    .addComponent(jLabel3))
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                    .addComponent(jLabel5)
+	                    .addComponent(cb_decision_class, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                    .addComponent(tv_elements, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                    .addComponent(jLabel4)))
+	        );
+
+	        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("dane wejścowe"));
+
+	        dataTxtArea.setColumns(20);
+	        dataTxtArea.setRows(5);
+	        jScrollPane1.setViewportView(dataTxtArea);
+
+	        read_fromFileBtn.setText("wczytaj z pliku");
+
+	        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+	        jPanel2.setLayout(jPanel2Layout);
+	        jPanel2Layout.setHorizontalGroup(
+	            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addComponent(jScrollPane1)
+	            .addGroup(jPanel2Layout.createSequentialGroup()
+	                .addGap(0, 0, Short.MAX_VALUE)
+	                .addComponent(read_fromFileBtn))
+	        );
+	        jPanel2Layout.setVerticalGroup(
+	            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addGroup(jPanel2Layout.createSequentialGroup()
+	                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+	                .addComponent(read_fromFileBtn))
+	        );
+
+	        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("klasyfikacja"));
+
+	        assign_classes.setText("klasyfikuj");
+
+	        classesTextArea.setColumns(20);
+	        classesTextArea.setRows(5);
+	        jScrollPane2.setViewportView(classesTextArea);
+
+	        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+	        jPanel3.setLayout(jPanel3Layout);
+	        jPanel3Layout.setHorizontalGroup(
+	            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+	                .addGap(0, 0, Short.MAX_VALUE)
+	                .addComponent(assign_classes))
+	            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+	        );
+	        jPanel3Layout.setVerticalGroup(
+	            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addGroup(jPanel3Layout.createSequentialGroup()
+	                .addComponent(assign_classes)
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+	                .addComponent(jScrollPane2))
+	        );
+
+	        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(knn_frame.getContentPane());
+	        knn_frame.getContentPane().setLayout(layout);
+	        layout.setHorizontalGroup(
+	            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addGroup(layout.createSequentialGroup()
+	                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+	                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, Short.MAX_VALUE))
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+	                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+	        );
+	        layout.setVerticalGroup(
+	            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addGroup(layout.createSequentialGroup()
+	                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+	                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+	            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	        );
+	        
+	        assign_classes.addActionListener(new java.awt.event.ActionListener() {
+	            public void actionPerformed(java.awt.event.ActionEvent evt) {
+	            	int x_col = cb_x_select.getSelectedIndex();
+	            	int y_col = cb_y_select.getSelectedIndex();
+	            	int class_col = cb_decision_class.getSelectedIndex();
+	            	
+					int n_neighbors = Integer.parseInt(tv_elements.getText());
+	            	
+	            	int[] classes_array = Utils.classAttribution(m.getColumn(class_col), 1000);
+	            	double[] data_x = Converts.convertToDouble(m.getColumn(x_col));
+	            	double[] data_y = Converts.convertToDouble(m.getColumn(y_col));
+	            	LinkedList<ClassModel> class_data = new LinkedList<>();
+	            	
+	            	for(int i=0; i<data_x.length; i++){
+	            		ClassModel cm = new ClassModel(data_x[i], data_y[i], classes_array[i]);
+	            		class_data.add(cm);
+	            	}
+	            	
+	            	String raw_input = dataTxtArea.getText();
+	            	raw_input.replaceAll("\\s", "");
+	            	String[] raw_points = raw_input.split("\n");
+	            	
+	            	LinkedList<Point> input_data= new LinkedList<>();
+	            	
+	            	for(String raw_point : raw_points){
+	            		String[] xy = raw_point.split(",");
+	            		Point p = new Point(Double.parseDouble(xy[0]), Double.parseDouble(xy[1]));
+	            		input_data.add(p);
+	            	}
+	            	
+	            	LinkedList<ClassModel> distance = new LinkedList<>();
+	            	
+	            	int knn_method = knn_method_cb.getSelectedIndex();
+					LinkedList<Neighborns> neighborns = new LinkedList<>();
+	            	switch (knn_method) {
+					case 0:// "odległość euklidesowa"
+						for(Point from : input_data){
+							LinkedList<ClassModel> tempDist = new LinkedList<>();
+							
+							for(ClassModel to : class_data){
+								double dist = Statistic.euclideanDistance(from, to.getPoint());
+								ClassModel cm = new ClassModel(to.getN_class(), dist);
+								cm.setPoint(from);
+								tempDist.add(cm);
+							}
+							
+							Collections.sort(tempDist);
+							ListIterator iter = tempDist.listIterator();
+							
+							LinkedList<ClassModel> closest_neighborns = new LinkedList<>();
+							
+							for(int i = 0; i<n_neighbors; i++){
+								if(iter.hasNext())
+									closest_neighborns.add((ClassModel) iter.next());
+							}
+							
+							Neighborns nghbrns = new Neighborns(from, closest_neighborns);
+							neighborns.add(nghbrns);
+						}
+						
+						
+						
+						for(Neighborns n : neighborns){
+							classesTextArea.append(n.getPoint().toString()+" Klasy: ");
+							for(ClassModel cm : n.getDistances())
+								classesTextArea.append(cm.getN_class()+", ");
+							classesTextArea.append("\n");
+						}
+						
+						//TODO dodać wybór najliczniejszej klasy
+						
+						/*
+						Collections.sort(distance);
+						
+						LinkedList<ClassModel> closest_neighborns = new LinkedList<>();
+						
+						ListIterator iter =  distance.listIterator();
+						
+						for(int i=0; i<n_neighbors; i++){
+							closest_neighborns.add((ClassModel) iter.previous());
+						}
+						
+						for(ClassModel cm : closest_neighborns){
+							Log(cm.toString());
+						}
+						*/
+						
+						
+						break;
+						
+					case 1://"metryka manhattan"
+						for(Point from : input_data){
+							LinkedList<ClassModel> tempDist = new LinkedList<>();
+							
+							for(ClassModel to : class_data){
+								double dist = Statistic.manhattanDistance(from, to.getPoint());
+								ClassModel cm = new ClassModel(to.getN_class(), dist);
+								cm.setPoint(from);
+								tempDist.add(cm);
+							}
+							
+							Collections.sort(tempDist);
+							ListIterator iter = tempDist.listIterator();
+							
+							LinkedList<ClassModel> closest_neighborns = new LinkedList<>();
+							
+							for(int i = 0; i<n_neighbors; i++){
+								if(iter.hasNext())
+									closest_neighborns.add((ClassModel) iter.next());
+							}
+							
+							Neighborns nghbrns = new Neighborns(from, closest_neighborns);
+							neighborns.add(nghbrns);
+						}
+						
+						
+						
+						for(Neighborns n : neighborns){
+							classesTextArea.append(n.getPoint().toString()+" Klasy: ");
+							for(ClassModel cm : n.getDistances())
+								classesTextArea.append(cm.getN_class()+", ");
+							classesTextArea.append("\n");
+						}
+						
+						break;
+						
+					case 2://"metryka nieskończoność"
+						for(Point from : input_data){
+							LinkedList<ClassModel> tempDist = new LinkedList<>();
+							
+							for(ClassModel to : class_data){
+								double dist = Statistic.chebyshevDistance(from, to.getPoint());
+								ClassModel cm = new ClassModel(to.getN_class(), dist);
+								cm.setPoint(from);
+								tempDist.add(cm);
+							}
+							
+							Collections.sort(tempDist);
+							ListIterator iter = tempDist.listIterator();
+							
+							LinkedList<ClassModel> closest_neighborns = new LinkedList<>();
+							
+							for(int i = 0; i<n_neighbors; i++){
+								if(iter.hasNext())
+									closest_neighborns.add((ClassModel) iter.next());
+							}
+							
+							Neighborns nghbrns = new Neighborns(from, closest_neighborns);
+							neighborns.add(nghbrns);
+						}
+						
+						
+						
+						for(Neighborns n : neighborns){
+							classesTextArea.append(n.getPoint().toString()+" Klasy: ");
+							for(ClassModel cm : n.getDistances())
+								classesTextArea.append(cm.getN_class()+", ");
+							classesTextArea.append("\n");
+						}
+						
+						break;
+
+					default:
+						break;
+					}
+	            	
+	            	
+	         
+	            	
+	            	
+	            	
+	            	
+	            	
+	            	
+	            	
+	            }
+	        });
+	        knn_frame.pack();
+	        
+	        java.awt.EventQueue.invokeLater(new Runnable() {
+	            public void run() {
+	                knn_frame.setVisible(true);
+	            }
+	        });
+			
+			
+		}
+	}
 	
 }
