@@ -32,7 +32,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
-import org.apache.commons.math3.analysis.function.Log;
 import org.apache.commons.math3.stat.StatUtils;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -44,6 +43,7 @@ import swd2014.projekt1.models.Neighborns;
 import swd2014.projekt1.models.Point;
 import swd2014.projekt1.utils.Converts;
 import swd2014.projekt1.utils.DataPrinting;
+import swd2014.projekt1.utils.DataSplit;
 import swd2014.projekt1.utils.Statistic;
 import swd2014.projekt1.utils.Utils;
 import swd2014.projekt1.xls.UniParser;
@@ -654,12 +654,7 @@ public class ApplicationWindow extends JFrame {
 		percentile = StatUtils.percentile(data, 5);
 		Log("Percentyl 5%: " + percentile + "\n");
 		// prcLbl.setText(Double.toString(percentile));
-		
-		Point p = new Point(23,43);
-		
-
-		
-		
+				
 	}
 	
 	private void drawChartActionPerformed(java.awt.event.ActionEvent evt){
@@ -716,10 +711,10 @@ public class ApplicationWindow extends JFrame {
 		double[] y_data =  Converts.convertToDouble(m.getColumn(y_column));
 		String[] group_data =  m.getColumn(groupBy);
 		
-		int [] class_array = Utils.classAttribution(group_data, 5);
+		int [] class_array = DataSplit.classNumberAttribution(group_data, 1000);
 		
-		double[][] x_grouped = Utils.splitDataByClasses(x_data, class_array);
-		double[][] y_grouped = Utils.splitDataByClasses(y_data, class_array);
+		double[][] x_grouped = DataSplit.splitDataByClasses(x_data, class_array);
+		double[][] y_grouped = DataSplit.splitDataByClasses(y_data, class_array);
 		
 		
 		String[] col_names = m.getColumnNames();
@@ -837,7 +832,7 @@ public class ApplicationWindow extends JFrame {
 	            	
 	            	//m.getColumn(wybrana_kolumna);
 
-	            	int[] kolumnaKlas = Utils.classAttribution(m.getColumn(wybrana_kolumna), liczba_klas);
+	            	int[] kolumnaKlas = DataSplit.classNumberAttribution(m.getColumn(wybrana_kolumna), liczba_klas);
 	            	m.appendColumn(Converts.convertToString(kolumnaKlas), newColName);
 	            	dataSetChanged();
 	            	
@@ -961,7 +956,7 @@ public class ApplicationWindow extends JFrame {
 
 	        knn_frame.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-	        knn_method_cb.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "odległość euklidesowa", "metryka manhattan", "metryka nieskończoności" }));
+	        knn_method_cb.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "odległość euklidesowa", "metryka manhattan", "metryka nieskończoności", "odległość Mahalanobisa" }));
 
 	        jLabel1.setText("metoda klasyfikacji:");
 
@@ -1115,7 +1110,7 @@ public class ApplicationWindow extends JFrame {
 	            	
 					int n_neighbors = Integer.parseInt(tv_elements.getText());
 	            	
-	            	int[] classes_array = Utils.classAttribution(m.getColumn(class_col), 1000);
+	            	int[] classes_array = DataSplit.classNumberAttribution(m.getColumn(class_col), 1000);
 	            	double[] data_x = Converts.convertToDouble(m.getColumn(x_col));
 	            	double[] data_y = Converts.convertToDouble(m.getColumn(y_col));
 	            	LinkedList<ClassModel> class_data = new LinkedList<>();
@@ -1268,20 +1263,54 @@ public class ApplicationWindow extends JFrame {
 						}
 						
 						break;
+						
+					case 3://Mahalanobisa
+						for(Point from : input_data){
+							LinkedList<ClassModel> tempDist = new LinkedList<>();
+							Point[] points = new Point[class_data.size()];
+							
+							int index = 0;
+							for(ClassModel to : class_data){
+								points[index++] = to.getPoint();
+							}
+							
+							double dist = Statistic.mahanalobisDistance(from, points);
+							
+							/*
+							for(ClassModel to : class_data){
+								double dist = Statistic.mahanalobisDistance(from, to.getPoint());
+								ClassModel cm = new ClassModel(to.getN_class(), dist);
+								cm.setPoint(from);
+								tempDist.add(cm);
+							}
+							*/
+							
+							Collections.sort(tempDist);
+							ListIterator iter = tempDist.listIterator();
+							
+							LinkedList<ClassModel> closest_neighborns = new LinkedList<>();
+							
+							for(int i = 0; i<n_neighbors; i++){
+								if(iter.hasNext())
+									closest_neighborns.add((ClassModel) iter.next());
+							}
+							
+							Neighborns nghbrns = new Neighborns(from, closest_neighborns);
+							neighborns.add(nghbrns);
+						}
+							
+						for(Neighborns n : neighborns){
+							classesTextArea.append(n.getPoint().toString()+" Klasy: ");
+							for(ClassModel cm : n.getDistances())
+								classesTextArea.append(cm.getN_class()+", ");
+							classesTextArea.append("\n");
+						}
+						
+						break;
 
 					default:
 						break;
-					}
-	            	
-	            	
-	         
-	            	
-	            	
-	            	
-	            	
-	            	
-	            	
-	            	
+					}	            	
 	            }
 	        });
 	        knn_frame.pack();
