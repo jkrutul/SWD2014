@@ -34,6 +34,17 @@ public class Converts {
 			
 	}
 	
+	public static String[] convertToString(double [] numbers){
+		String[] strings = new String[numbers.length];
+		int i =0;
+		for(double n : numbers)
+			strings[i++] = String.valueOf(n);
+		
+		return strings;	
+	}
+
+
+	
 	public static float[] convertToFloat(String[] numbers){
 		float[] floats = new float[numbers.length];
 		int i =0;

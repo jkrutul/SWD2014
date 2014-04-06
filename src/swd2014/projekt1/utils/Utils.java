@@ -120,24 +120,19 @@ public class Utils {
 	        ValueComparator bvc = new ValueComparator(map);
 	        TreeMap<String,Integer> sorted_map = new TreeMap<String,Integer>(bvc);
 
-	        System.out.println("unsorted map: "+map);
+
 
 	        sorted_map.putAll(map);
 	        Set<String> key_set =  sorted_map.keySet();
 	        Collection<Integer> val_set =  sorted_map.values();
 	        
 	        LinkedHashMap<String, Integer> sorted_m = new LinkedHashMap<>();
-	        
-
 	        Iterator v_iter = val_set.iterator();
 
-	        for( String s : key_set){
+	        for( String s : key_set)
 	        	sorted_m.put(s, (Integer) v_iter.next());
-	        }
 	        
 	        
-	       	 
-	        System.out.println("results: "+sorted_m);	
 	        return sorted_m;
 	}
 	
@@ -225,6 +220,67 @@ public class Utils {
 		}
 	}
 
+	public static double[] changeInterval(double[] data, double min, double max){
+		double d_max=data[0];
+		double d_min=data[0];
+		double [] out = new double[data.length];
+		
+		for(double d : data){
+			if(d_max<d)
+				d_max = d;
+			if(d_min>d)
+				d_min=d;
+		}
+		if(d_min == d_max){
+			return data;
+		}
+		
+		if(d_min<0){
+		
+			d_max += Math.abs(d_min);
+			int i =0;
+			for(double d : data)
+				out[i++] = d+Math.abs(d_min);
+			
+			d_min = 0;
+		}else{
+			d_max-=d_min;
+			int i=0;
+			for(double d : data)
+				out[i++] = d-d_min;
+			d_min=0;
+		}
+		
+		int i=0;
+		for(double o : out)
+			out[i++] = (o/d_max) * (max-min) + min;
+		
+		return out;
+		
+		
+	}
+	
+	public static String mostFrequent(String[] data){
+		LinkedHashMap<String, Integer> mapOfOccurrences = new LinkedHashMap<String, Integer>();
+		for(String s : data){
+			if(mapOfOccurrences.containsKey(s)){
+				int oldVal = mapOfOccurrences.get(s);
+				mapOfOccurrences.put(s, ++oldVal);
+			}else{
+				mapOfOccurrences.put(s, 1);
+			}
+		}
+		String mostOccurance =null;
+		int max= 0;
+		for(String s : mapOfOccurrences.keySet()){
+			int count = mapOfOccurrences.get(s);
+			if(max<count){
+				max = count;
+				mostOccurance=s;
+			}
+		}
+		return mostOccurance;
+	}
 }
 
 class ValueComparator implements Comparator<String> {

@@ -33,17 +33,20 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import swd2014.projekt1.csv.CsvFileReader;
 import swd2014.projekt1.csv.CsvReadWriteSettings;
-import swd2014.projekt1.models.ClassModel;
+import swd2014.projekt1.models.PointClassModel;
+import swd2014.projekt1.models.DataAndClass;
 import swd2014.projekt1.models.Matrix;
 import swd2014.projekt1.models.Neighborns;
 import swd2014.projekt1.models.Point;
 import swd2014.projekt1.utils.Converts;
 import swd2014.projekt1.utils.DataPrinting;
 import swd2014.projekt1.utils.DataSplit;
+import swd2014.projekt1.utils.Mahalanobis;
 import swd2014.projekt1.utils.Statistic;
 import swd2014.projekt1.utils.Utils;
 import swd2014.projekt1.xls.UniParser;
@@ -62,7 +65,7 @@ public class ApplicationWindow extends JFrame {
 	private javax.swing.JButton calculate_file;
 	private javax.swing.JScrollPane jScrollPane1;
 	public static javax.swing.JTextArea consolTextArea;
-	private javax.swing.JButton reload_fileButton, open_fileButton, drawChartButton, filesaveButton;
+	private javax.swing.JButton reload_fileButton, open_fileButton, drawChartButton, filesaveButton, standardBtn, discretizationBtn;
     private static javax.swing.JComboBox colSelectComboBox;
 
 	private static javax.swing.JComboBox groupComboBox;
@@ -75,8 +78,8 @@ public class ApplicationWindow extends JFrame {
 
 	private static javax.swing.JComboBox zComboBox;
     
-    private JMenu group_menu, file_menu, disp_menu;
-    private JMenuItem pref_class_mi, save_toFile_mi, close_mi, open_file_mi, mDispl_mi, knn_mi;
+    private JMenu group_menu, file_menu, disp_menu, stat_menu;
+    private JMenuItem pref_class_mi, save_toFile_mi, close_mi, open_file_mi, mDispl_mi, knn_mi, discretization_mi, interval_mi;
     
 	static TableGUI tg;
     
@@ -86,6 +89,7 @@ public class ApplicationWindow extends JFrame {
 	private JFileChooser fc;
 	private JTextField delimeterTF;
 	private JLabel filenameLabel;
+	private JTextField nClass;
 
 	/**
 	 * Launch the application.
@@ -136,7 +140,20 @@ public class ApplicationWindow extends JFrame {
 	    group_menu = new JMenu("Grupowanie");
 		file_menu = new JMenu("Plik");	
 		disp_menu = new JMenu("Wyświetl");
-	    
+		stat_menu = new JMenu("Statystyka");
+		
+		
+	    save_toFile_mi = new JMenuItem("Zapisz do pliku");
+	    save_toFile_mi.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveMatrixActionPerformed(e);
+				
+			}
+		});
+		
+
 	    save_toFile_mi = new JMenuItem("Zapisz do pliku");
 	    save_toFile_mi.addActionListener(new ActionListener() {
 			
@@ -195,10 +212,20 @@ public class ApplicationWindow extends JFrame {
 			}
 		});
 		
+		interval_mi = new JMenuItem("Zmień przedział");
+		interval_mi.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PopupWindows.intervalForm();
+				
+			}
+		});
 		
 		
 		group_menu.add(pref_class_mi);
 		group_menu.add(knn_mi);
+		group_menu.add(interval_mi);
 		
 		file_menu.add(open_file_mi);
 		file_menu.add(save_toFile_mi);
@@ -268,7 +295,9 @@ public class ApplicationWindow extends JFrame {
         zComboBox = new javax.swing.JComboBox();
 		reload_fileButton = new javax.swing.JButton();
         filesaveButton = new JButton("zapisz");
-
+        standardBtn = new JButton("standaryzacja");
+        nClass = new JTextField();
+        discretizationBtn = new JButton("dyskretyzacja");
         
 		enable_disableButtons(false);
 		
@@ -398,27 +427,60 @@ public class ApplicationWindow extends JFrame {
         });
 
         colSelectComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0", "1", "2", "3", "4", "5" }));
+        
+
+        standardBtn.setEnabled(false);
+        standardBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	standardActionPerformed(evt);
+            }
+        });
+        
+
+        discretizationBtn.setEnabled(false);
+        discretizationBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	 discretizationActionPerformed(evt);
+            }
+        });
+        
+        nClass.setText("5");
+        nClass.setEnabled(false);
+        nClass.setColumns(10);
 
         javax.swing.GroupLayout gl_statisticPanel = new javax.swing.GroupLayout(statisticPanel);
-        statisticPanel.setLayout(gl_statisticPanel);
         gl_statisticPanel.setHorizontalGroup(
-            gl_statisticPanel.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(gl_statisticPanel.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(colSelectComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(calculate_file, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        	gl_statisticPanel.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_statisticPanel.createSequentialGroup()
+        			.addGroup(gl_statisticPanel.createParallelGroup(Alignment.LEADING)
+        				.addComponent(calculate_file, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        				.addGroup(gl_statisticPanel.createSequentialGroup()
+        					.addComponent(jLabel1)
+        					.addPreferredGap(ComponentPlacement.RELATED)
+        					.addComponent(colSelectComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        				.addGroup(gl_statisticPanel.createSequentialGroup()
+        					.addComponent(discretizationBtn, 0, 0, Short.MAX_VALUE)
+        					.addPreferredGap(ComponentPlacement.RELATED)
+        					.addComponent(nClass, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
+        				.addComponent(standardBtn, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE))
+        			.addGap(1))
         );
         gl_statisticPanel.setVerticalGroup(
-            gl_statisticPanel.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(gl_statisticPanel.createSequentialGroup()
-                .addGroup(gl_statisticPanel.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(colSelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(calculate_file)
-                .addContainerGap())
+        	gl_statisticPanel.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_statisticPanel.createSequentialGroup()
+        			.addGroup(gl_statisticPanel.createParallelGroup(Alignment.BASELINE)
+        				.addComponent(jLabel1)
+        				.addComponent(colSelectComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        			.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        			.addGroup(gl_statisticPanel.createParallelGroup(Alignment.BASELINE)
+        				.addComponent(discretizationBtn)
+        				.addComponent(nClass, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(standardBtn)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(calculate_file))
         );
+        statisticPanel.setLayout(gl_statisticPanel);
 
         chartPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("wykres"));
 
@@ -486,9 +548,6 @@ public class ApplicationWindow extends JFrame {
                 .addComponent(drawChartButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        
-        JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder(null, "Preferowanie najliczniejszych klass", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         layout.setHorizontalGroup(
@@ -496,12 +555,11 @@ public class ApplicationWindow extends JFrame {
         		.addGroup(layout.createSequentialGroup()
         			.addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
         			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addGroup(layout.createParallelGroup(Alignment.LEADING)
-        				.addGroup(layout.createParallelGroup(Alignment.TRAILING)
-        					.addComponent(chartPanel, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE)
-        					.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE))
-        				.addComponent(statisticPanel, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE))
+        			.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+        				.addGroup(layout.createParallelGroup(Alignment.LEADING)
+        					.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE)
+        					.addComponent(statisticPanel, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE))
+        				.addComponent(chartPanel, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE))
         			.addContainerGap())
         );
         layout.setVerticalGroup(
@@ -510,12 +568,10 @@ public class ApplicationWindow extends JFrame {
         			.addContainerGap()
         			.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 179, GroupLayout.PREFERRED_SIZE)
         			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(statisticPanel, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+        			.addComponent(statisticPanel, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
         			.addPreferredGap(ComponentPlacement.RELATED)
         			.addComponent(chartPanel, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(panel, GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
-        			.addContainerGap())
+        			.addContainerGap(59, Short.MAX_VALUE))
         		.addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
         );
         getContentPane().setLayout(layout);
@@ -523,6 +579,27 @@ public class ApplicationWindow extends JFrame {
         pack();
         this.setJMenuBar(menuBar);
         
+        
+        kodTestowyPoZaladowaniuGUI();
+        
+        
+        
+	}
+	
+	private void kodTestowyPoZaladowaniuGUI(){
+		DataAndClass dac[] = DataSplit.discretization(new double[]{1,3,2,2,6,3,7,9,4,1}, 3, true);
+		
+		for(DataAndClass dc : dac){
+			Log(dc.toString());
+		}
+		
+		
+		double[] i_change = Utils.changeInterval(new double[]{0,10,20,30,40,50,60,70,80,90,100}, -50 , 50);
+		
+		for(double d : i_change){
+			Log(d+"\n");
+			
+		}
 	}
 
 	
@@ -618,7 +695,7 @@ public class ApplicationWindow extends JFrame {
 		int column_index = colSelectComboBox.getSelectedIndex();
 		double[] data = Converts.convertToDouble(m.getColumn(column_index));
 
-		Log("\nStatystyka dla kolumny " + column_index + "\n");
+		Log("\nStatystyka dla kolumny " + m.getColumnNames()[column_index] + "\n");
 
 		double mean;
 		mean = StatUtils.mean(data);
@@ -630,9 +707,9 @@ public class ApplicationWindow extends JFrame {
 		Log("Wariancja: " + variance + "\n");
 		// varLbl.setText(Double.toString(variance));
 
-		double sd;
-		sd = Statistic.standardDeviantion(variance);
-		Log("Odchylenie standardowe: " + sd + "\n");
+		StandardDeviation sdev = new StandardDeviation();
+		double sd = sdev.evaluate(data);
+		Log("Odchylenie standardowe: " + sd+"\n");
 		// sdLbl.setText(Double.toString(sd));
 
 		double median;
@@ -691,6 +768,41 @@ public class ApplicationWindow extends JFrame {
 		Utils.saveMatrixToFile(m, save_file, "plik z programu \n SWD2014");
 	}
 	
+	private void standardActionPerformed(ActionEvent evt){
+		int column_index = colSelectComboBox.getSelectedIndex();
+		double[] data = Converts.convertToDouble(m.getColumn(column_index));
+		double[] standard = Statistic.standardScore(data);
+		String[] standard_str = new String[standard.length];
+		int i=0;
+		for(double d : standard){
+			standard_str[i] = Double.toString(d);
+			i++;
+		}
+		
+		String colName = m.getColumnNames()[column_index]+"_standaryzacja";
+		m.appendColumn(standard_str, colName);
+		dataSetChanged();
+		
+	}
+	
+	private void discretizationActionPerformed(ActionEvent evt){
+		int column_index = colSelectComboBox.getSelectedIndex();
+		double[] data = Converts.convertToDouble(m.getColumn(column_index));
+		int divideBy = Integer.parseInt(nClass.getText());
+		String colName = m.getColumnNames()[column_index]+"_disc";
+		
+		DataAndClass[] dnc = DataSplit.discretization(data, divideBy, true);
+		String[] class_col = new String[dnc.length];
+		
+		int i=0;
+		for(DataAndClass dc : dnc){
+			class_col[i++] = dc.getClassName();
+		}
+		
+		m.appendColumn(class_col, colName);
+		dataSetChanged();
+		
+	}
 	//FUNKCJE WYWOŁYWANE PRZEZ BUTTONY -- KONIEC
 
 
@@ -763,6 +875,9 @@ public class ApplicationWindow extends JFrame {
         jLabel5.setEnabled(enable);
 		reload_fileButton.setEnabled(enable);
         filesaveButton.setEnabled(enable);
+        standardBtn.setEnabled(enable);
+        nClass.setEnabled(enable);
+        discretizationBtn.setEnabled(enable);
         
         //    private JMenu group_menu, file_menu, disp_menu;
        // private JMenuItem pref_class_mi, close_mi, open_file_mi, mDispl_mi;
@@ -770,6 +885,7 @@ public class ApplicationWindow extends JFrame {
         disp_menu.setEnabled(enable);
         group_menu.setEnabled(enable);
         save_toFile_mi.setEnabled(enable);
+        
         
         
 	}
@@ -915,9 +1031,7 @@ public class ApplicationWindow extends JFrame {
 		    
 		    
 		}
-		
-	
-		
+
 		public static void displayKnn(){
 		    JButton assign_classes, read_fromFileBtn;
 		    final JTextArea classesTextArea;
@@ -1110,13 +1224,16 @@ public class ApplicationWindow extends JFrame {
 	            	
 					int n_neighbors = Integer.parseInt(tv_elements.getText());
 	            	
-	            	int[] classes_array = DataSplit.classNumberAttribution(m.getColumn(class_col), 1000);
+	            	//int[] classes_array = DataSplit.classNumberAttribution(m.getColumn(class_col), 1000);
+					//String classes_array = DataSplit.classNameAttribution(class_val, data_val);
+					String[] classes_array = m.getColumn(class_col);
+	            	Converts.convertToString(DataSplit.classNumberAttribution(m.getColumn(class_col), 1000));
 	            	double[] data_x = Converts.convertToDouble(m.getColumn(x_col));
 	            	double[] data_y = Converts.convertToDouble(m.getColumn(y_col));
-	            	LinkedList<ClassModel> class_data = new LinkedList<>();
+	            	LinkedList<PointClassModel> class_data = new LinkedList<>();
 	            	
 	            	for(int i=0; i<data_x.length; i++){
-	            		ClassModel cm = new ClassModel(data_x[i], data_y[i], classes_array[i]);
+	            		PointClassModel cm = new PointClassModel(data_x[i], data_y[i], classes_array[i]);
 	            		class_data.add(cm);
 	            	}
 	            	
@@ -1132,18 +1249,18 @@ public class ApplicationWindow extends JFrame {
 	            		input_data.add(p);
 	            	}
 	            	
-	            	LinkedList<ClassModel> distance = new LinkedList<>();
+	            	//LinkedList<PointClassModel> distance = new LinkedList<>();
 	            	
 	            	int knn_method = knn_method_cb.getSelectedIndex();
 					LinkedList<Neighborns> neighborns = new LinkedList<>();
 	            	switch (knn_method) {
 					case 0:// "odległość euklidesowa"
 						for(Point from : input_data){
-							LinkedList<ClassModel> tempDist = new LinkedList<>();
+							LinkedList<PointClassModel> tempDist = new LinkedList<>();
 							
-							for(ClassModel to : class_data){
+							for(PointClassModel to : class_data){
 								double dist = Statistic.euclideanDistance(from, to.getPoint());
-								ClassModel cm = new ClassModel(to.getN_class(), dist);
+								PointClassModel cm = new PointClassModel(to.getN_class(), dist);
 								cm.setPoint(from);
 								tempDist.add(cm);
 							}
@@ -1151,11 +1268,11 @@ public class ApplicationWindow extends JFrame {
 							Collections.sort(tempDist);
 							ListIterator iter = tempDist.listIterator();
 							
-							LinkedList<ClassModel> closest_neighborns = new LinkedList<>();
+							LinkedList<PointClassModel> closest_neighborns = new LinkedList<>();
 							
 							for(int i = 0; i<n_neighbors; i++){
 								if(iter.hasNext())
-									closest_neighborns.add((ClassModel) iter.next());
+									closest_neighborns.add((PointClassModel) iter.next());
 							}
 							
 							Neighborns nghbrns = new Neighborns(from, closest_neighborns);
@@ -1164,12 +1281,7 @@ public class ApplicationWindow extends JFrame {
 						
 						
 						
-						for(Neighborns n : neighborns){
-							classesTextArea.append(n.getPoint().toString()+" Klasy: ");
-							for(ClassModel cm : n.getDistances())
-								classesTextArea.append(cm.getN_class()+", ");
-							classesTextArea.append("\n");
-						}
+
 						
 						//TODO dodać wybór najliczniejszej klasy
 						
@@ -1194,11 +1306,11 @@ public class ApplicationWindow extends JFrame {
 						
 					case 1://"metryka manhattan"
 						for(Point from : input_data){
-							LinkedList<ClassModel> tempDist = new LinkedList<>();
+							LinkedList<PointClassModel> tempDist = new LinkedList<>();
 							
-							for(ClassModel to : class_data){
+							for(PointClassModel to : class_data){
 								double dist = Statistic.manhattanDistance(from, to.getPoint());
-								ClassModel cm = new ClassModel(to.getN_class(), dist);
+								PointClassModel cm = new PointClassModel(to.getN_class(), dist);
 								cm.setPoint(from);
 								tempDist.add(cm);
 							}
@@ -1206,11 +1318,11 @@ public class ApplicationWindow extends JFrame {
 							Collections.sort(tempDist);
 							ListIterator iter = tempDist.listIterator();
 							
-							LinkedList<ClassModel> closest_neighborns = new LinkedList<>();
+							LinkedList<PointClassModel> closest_neighborns = new LinkedList<>();
 							
 							for(int i = 0; i<n_neighbors; i++){
 								if(iter.hasNext())
-									closest_neighborns.add((ClassModel) iter.next());
+									closest_neighborns.add((PointClassModel) iter.next());
 							}
 							
 							Neighborns nghbrns = new Neighborns(from, closest_neighborns);
@@ -1219,22 +1331,17 @@ public class ApplicationWindow extends JFrame {
 						
 						
 						
-						for(Neighborns n : neighborns){
-							classesTextArea.append(n.getPoint().toString()+" Klasy: ");
-							for(ClassModel cm : n.getDistances())
-								classesTextArea.append(cm.getN_class()+", ");
-							classesTextArea.append("\n");
-						}
+
 						
 						break;
 						
 					case 2://"metryka nieskończoność"
 						for(Point from : input_data){
-							LinkedList<ClassModel> tempDist = new LinkedList<>();
+							LinkedList<PointClassModel> tempDist = new LinkedList<>();
 							
-							for(ClassModel to : class_data){
-								double dist = Statistic.chebyshevDistance(from, to.getPoint());
-								ClassModel cm = new ClassModel(to.getN_class(), dist);
+							for(PointClassModel to : class_data){
+								double dist = Statistic.metrykaNieskonczonosc(from, to.getPoint());
+								PointClassModel cm = new PointClassModel(to.getN_class(), dist);
 								cm.setPoint(from);
 								tempDist.add(cm);
 							}
@@ -1242,11 +1349,11 @@ public class ApplicationWindow extends JFrame {
 							Collections.sort(tempDist);
 							ListIterator iter = tempDist.listIterator();
 							
-							LinkedList<ClassModel> closest_neighborns = new LinkedList<>();
+							LinkedList<PointClassModel> closest_neighborns = new LinkedList<>();
 							
 							for(int i = 0; i<n_neighbors; i++){
 								if(iter.hasNext())
-									closest_neighborns.add((ClassModel) iter.next());
+									closest_neighborns.add((PointClassModel) iter.next());
 							}
 							
 							Neighborns nghbrns = new Neighborns(from, closest_neighborns);
@@ -1254,27 +1361,21 @@ public class ApplicationWindow extends JFrame {
 						}
 						
 						
-						
-						for(Neighborns n : neighborns){
-							classesTextArea.append(n.getPoint().toString()+" Klasy: ");
-							for(ClassModel cm : n.getDistances())
-								classesTextArea.append(cm.getN_class()+", ");
-							classesTextArea.append("\n");
-						}
+
 						
 						break;
 						
 					case 3://Mahalanobisa
 						for(Point from : input_data){
-							LinkedList<ClassModel> tempDist = new LinkedList<>();
+							LinkedList<PointClassModel> tempDist = new LinkedList<>();
 							Point[] points = new Point[class_data.size()];
 							
 							int index = 0;
-							for(ClassModel to : class_data){
+							for(PointClassModel to : class_data){
 								points[index++] = to.getPoint();
 							}
 							
-							double dist = Statistic.mahanalobisDistance(from, points);
+							//double dist = Statistic.mahanalobisDistance(from, points);
 							
 							/*
 							for(ClassModel to : class_data){
@@ -1288,29 +1389,42 @@ public class ApplicationWindow extends JFrame {
 							Collections.sort(tempDist);
 							ListIterator iter = tempDist.listIterator();
 							
-							LinkedList<ClassModel> closest_neighborns = new LinkedList<>();
+							LinkedList<PointClassModel> closest_neighborns = new LinkedList<>();
 							
 							for(int i = 0; i<n_neighbors; i++){
 								if(iter.hasNext())
-									closest_neighborns.add((ClassModel) iter.next());
+									closest_neighborns.add((PointClassModel) iter.next());
 							}
 							
 							Neighborns nghbrns = new Neighborns(from, closest_neighborns);
 							neighborns.add(nghbrns);
 						}
-							
-						for(Neighborns n : neighborns){
-							classesTextArea.append(n.getPoint().toString()+" Klasy: ");
-							for(ClassModel cm : n.getDistances())
-								classesTextArea.append(cm.getN_class()+", ");
-							classesTextArea.append("\n");
-						}
+						
 						
 						break;
 
 					default:
 						break;
-					}	            	
+					}
+
+					for(Neighborns n : neighborns){
+		            	String[] el_classes = new String[n.getDistances().size()];
+		            	
+
+						int i =0;
+						for(PointClassModel cm : n.getDistances())
+							el_classes[i++] = cm.getN_class();
+						
+
+						
+						classesTextArea.append(n.getPoint().toString()+"- ");
+						classesTextArea.append(Utils.mostFrequent(el_classes));
+						
+						classesTextArea.append("\tsąsiedzi:[  ");
+						for(String s : el_classes)
+							classesTextArea.append(s+", ");
+						classesTextArea.append("]\n");
+					}
 	            }
 	        });
 	        knn_frame.pack();
@@ -1323,6 +1437,116 @@ public class ApplicationWindow extends JFrame {
 			
 			
 		}
-	}
 	
+		public static void intervalForm(){
+			final JComboBox intColSel;
+		    JButton jButton1;
+		    JLabel jLabel1,jLabel2,jLabel3;
+		    JPanel jPanel1;
+		    final JTextField jTextField1;
+			final JTextField jTextField2;
+		    final JFrame intervalFrame = new JFrame("Konwertuj przedział danych dla kolumny");
+		    
+	        jPanel1 = new javax.swing.JPanel();
+	        jLabel1 = new JLabel();
+	        jLabel2 = new JLabel();
+	        jLabel3 = new JLabel();
+	        intColSel = new javax.swing.JComboBox();
+	        jTextField1 = new javax.swing.JTextField();
+	        jTextField2 = new javax.swing.JTextField();
+	        jButton1 = new javax.swing.JButton();
+
+	        intervalFrame.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+	        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Zmień przedział "));
+
+	        jLabel1.setText("kolumna:");
+
+	        jLabel2.setText("minimum:");
+
+	        jLabel3.setText("maximum:");
+
+	        intColSel.setModel(new javax.swing.DefaultComboBoxModel( m.getColumnNames()));
+
+	        jTextField1.setText("0");
+
+	        jTextField2.setText("100");
+
+	        jButton1.setText("OK");
+	        jButton1.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int selectedColumn = intColSel.getSelectedIndex();
+					double min, max;
+					min = Double.parseDouble(jTextField1.getText());
+					max = Double.parseDouble(jTextField2.getText());
+					double[] i_change = Utils.changeInterval(Converts.convertToDouble(m.getColumn(selectedColumn)), min , max);
+					String colName = m.getColumnNames()[selectedColumn]+"_"+min+"_"+max;
+					m.appendColumn(Converts.convertToString(i_change), colName);
+					dataSetChanged();
+					intervalFrame.dispose();
+				}
+			});
+
+	        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+	        jPanel1.setLayout(jPanel1Layout);
+	        jPanel1Layout.setHorizontalGroup(
+	            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addGroup(jPanel1Layout.createSequentialGroup()
+	                .addGap(0, 0, Short.MAX_VALUE)
+	                .addComponent(jButton1))
+	            .addGroup(jPanel1Layout.createSequentialGroup()
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	                    .addComponent(jLabel3)
+	                    .addComponent(jLabel2)
+	                    .addGroup(jPanel1Layout.createSequentialGroup()
+	                        .addGap(2, 2, 2)
+	                        .addComponent(jLabel1)))
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	                    .addComponent(intColSel, 0, 151, Short.MAX_VALUE)
+	                    .addComponent(jTextField1)
+	                    .addComponent(jTextField2)))
+	        );
+	        jPanel1Layout.setVerticalGroup(
+	            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addGroup(jPanel1Layout.createSequentialGroup()
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                    .addComponent(jLabel1)
+	                    .addComponent(intColSel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                    .addComponent(jLabel2)
+	                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                    .addComponent(jLabel3)
+	                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+	                .addComponent(jButton1))
+	        );
+
+	        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(intervalFrame.getContentPane());
+	        intervalFrame.getContentPane().setLayout(layout);
+	        layout.setHorizontalGroup(
+	            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+	        );
+	        layout.setVerticalGroup(
+	            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+	        );
+
+	        intervalFrame.pack();
+	        
+	        java.awt.EventQueue.invokeLater(new Runnable() {
+	            public void run() {
+	                intervalFrame.setVisible(true);
+	            }
+	        });
+		    
+		}
+	
+	}
 }

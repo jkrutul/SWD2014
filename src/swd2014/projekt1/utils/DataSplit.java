@@ -1,9 +1,14 @@
 package swd2014.projekt1.utils;
 
 import java.awt.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+
+import org.apache.hadoop.hbase.util.Hash;
 
 import swd2014.projekt1.models.DataAndClass;
 
@@ -118,6 +123,11 @@ public class DataSplit {
 	public static DataAndClass[] classNameAttribution(String[] class_val, double[] data_val){
 		DataAndClass[] data_class = new DataAndClass[data_val.length];
 		
+		int i =0;
+		for(double d : data_val){
+			DataAndClass dac = new DataAndClass(d, class_val[i]);
+			data_class[i++] = dac;
+		}
 		
 		
 		return data_class;
@@ -129,7 +139,7 @@ public class DataSplit {
 	 * @param n - liczba elementów zbioru
 	 * @return tablica liczb całkowitych o długości n
 	 */
-	private static int[] discretization(int divideBy, int n){
+	private static int[] genTableOfClassElements(int divideBy, int n){
 		if(divideBy<=0 || n<=0)
 			return null;
 		
@@ -144,6 +154,49 @@ public class DataSplit {
 			}
 		}
 		return tab;
+	}
+	
+	public static DataAndClass[] discretization(double data[], int divideBy, boolean saveInputOrder){
+		double[] unsorted_data = data.clone();
+		double[] sorted_data;		
+		Arrays.sort(data);
+		sorted_data = data;
+		//ArrayList<Double> sorted_data = new ArrayList<>();
+		LinkedList<Integer> checkedIndexes = new LinkedList<>();
+		
+		DataAndClass[] dac = new DataAndClass[data.length];
+		
+		
+		//for(double d : data){
+		//	sorted_data.add(d);
+		//}
+		
+		int class_tab[] = genTableOfClassElements(divideBy, unsorted_data.length);
+		
+		if(!saveInputOrder){
+			for(int i = 0 ; i <sorted_data.length; i++){
+				dac[i] = new DataAndClass(sorted_data[i], Integer.toString(class_tab[i]));
+			}
+			return dac;
+		}else{
+			int i = 0;
+			for(double d : unsorted_data){
+				int index=-1;
+				for( int idx=0; idx<sorted_data.length ; idx++){
+					if(sorted_data[idx] == d && !checkedIndexes.contains(idx)){
+						index = idx;
+						break;
+					}
+				}
+				
+				dac[i++] = new DataAndClass(d, Integer.toString(class_tab[index]));
+				checkedIndexes.add(index);
+			}
+			
+		}
+		
+		return dac;
+		
 	}
 
 	public static DataAndClass[] splitData(double data[], String class_es[]){

@@ -24,4 +24,9 @@ public class DataAndClass {
 	public void setClassName(String className) {
 		this.className = className;
 	}
+	
+	@Override
+	public  String toString(){
+		return "d: "+data+" c: "+className+" ";
+	}
 }

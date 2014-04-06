@@ -4,14 +4,14 @@ import java.util.LinkedList;
 
 public class Neighborns {
 	private Point point;
-	private LinkedList<ClassModel> distances;
+	private LinkedList<PointClassModel> distances;
 	
 	
 		
 	public Point getPoint() {
 		return point;
 	}
-	public Neighborns(Point point, LinkedList<ClassModel> distances) {
+	public Neighborns(Point point, LinkedList<PointClassModel> distances) {
 		super();
 		this.point = point;
 		this.distances = distances;
@@ -19,10 +19,10 @@ public class Neighborns {
 	public void setPoint(Point point) {
 		this.point = point;
 	}
-	public LinkedList<ClassModel> getDistances() {
+	public LinkedList<PointClassModel> getDistances() {
 		return distances;
 	}
-	public void setDistances(LinkedList<ClassModel> distances) {
+	public void setDistances(LinkedList<PointClassModel> distances) {
 		this.distances = distances;
 	}
 }

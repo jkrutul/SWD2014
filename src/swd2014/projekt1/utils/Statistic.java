@@ -1,6 +1,8 @@
 package swd2014.projekt1.utils;
 
-import org.apache.mahout.common.distance.EuclideanDistanceMeasure;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.apache.mahout.common.distance.MahalanobisDistanceMeasure;
 import org.apache.mahout.math.Matrix;
 import org.apache.mahout.math.RandomAccessSparseVector;
@@ -54,6 +56,8 @@ public class Statistic {
 		return (double) Math.sqrt(variance);
 	}
 	
+
+	
 	public static float median(float[] data){
 		int n = data.length;
 		boolean isEven = (n%2 == 0) ? true : false;
@@ -97,6 +101,19 @@ public class Statistic {
 			return data[3*n/4];
 	}
 	
+	public static double[] standardScore(double[] data){
+		double mean = StatUtils.mean(data);
+		double[] output_data = new double[data.length];
+		StandardDeviation sd = new StandardDeviation();
+		double sd_value = sd.evaluate(data);
+		
+		int i=0;
+		for(double d : data){
+			output_data[i++] = ((d-mean)/sd_value);
+		}
+		
+		return output_data;
+	}
 	
 	public static double quantile(float[] data, float percent){
 		double t = (percent/100) * (data.length-1);
@@ -105,10 +122,16 @@ public class Statistic {
 	}
 	
 	public static double euclideanDistance(Point from, Point to){
+		/*
 		double distance=0;
 		distance = Math.pow((from.getX() - to.getX()), 2)+ Math.pow((from.getY()-to.getY()), 2);
 		distance = Math.sqrt(distance);
 		return distance;
+		*/
+		Vector2D v_from = new Vector2D(from.getX(),from.getY());
+		Vector2D v_to = new Vector2D(to.getX(),to.getY());
+		return Vector2D.distance(v_from, v_to);
+		
 	}
 	
 	public static double manhattanDistance(Point from, Point to){
@@ -117,10 +140,34 @@ public class Statistic {
 		return distance;
 	}
 	
-	public static double chebyshevDistance(Point from, Point to){
+	public static double metrykaNieskonczonosc(Point from, Point to){
+		/*
 		double distance = 0;
 		distance = Math.max(Math.abs(from.getX()-to.getX()), Math.abs(from.getY()- from.getY()));
 		return distance;
+		*/
+		Vector2D v_from = new Vector2D(from.getX(),from.getY());
+		Vector2D v_to = new Vector2D(to.getX(),to.getY());
+		return Vector2D.distanceInf(v_from, v_to);
+	}
+	
+	public static double mahanalobisDistance(Point from, Point to){
+		double[][] d = {{from.getX(), from.getY()},{to.getX(), to.getY()}};
+		
+		Vector v1 = new RandomAccessSparseVector(2);
+		v1.assign(d[0]);
+		Vector v2 = new RandomAccessSparseVector(2);
+		v2.assign(d[1]);
+		
+		Matrix matrix  = new SparseMatrix();
+		matrix.assignRow(0, v1);
+		matrix.assignRow(1, v2);
+		
+		MahalanobisDistanceMeasure dmM = new MahalanobisDistanceMeasure();
+		dmM.setInverseCovarianceMatrix(matrix);
+		return dmM.distance(v1, v2);
+		
+		
 	}
 	
 	
@@ -145,67 +192,47 @@ public class Statistic {
 		return distance;
 	}
 	
-	public static double[] chebyshevDistance(Point from, Point[] to){
+	public static double[] metrykaNieskonczonosc(Point from, Point[] to){
 		double[] distance = new double[to.length];
 		int i=0;
 		for(Point p : to ){
-			distance[i++] = chebyshevDistance(from, p);
+			distance[i++] = metrykaNieskonczonosc(from, p);
 		}
 		return distance;
 	}
 	
-	public static double mahanalobisDistance(Point from, Point[] to){
-		double distance = 0;
-		double[][] d = { { 1.0, 2.0 }, { 2.0, 4.0 },
-				{ 3.0, 6.0 }, { 3.0, 2.0 }, { 4.0, 8.0 } };
-
-		Vector v1 = new RandomAccessSparseVector(2);
-		v1.assign(d[0]);
-		Vector v2 = new RandomAccessSparseVector(2);
-		v2.assign(d[1]);
-		Vector v3 = new RandomAccessSparseVector(2);
-		v3.assign(d[2]);
-		Vector v4 = new RandomAccessSparseVector(2);
-		v4.assign(d[3]);
-		Vector v5 = new RandomAccessSparseVector(2);
-		v5.assign(d[4]);
-
-		Matrix matrix = new SparseMatrix();
-		matrix.assignRow(0, v1);
-		matrix.assignRow(1, v2);
-
-		EuclideanDistanceMeasure dmE = new EuclideanDistanceMeasure();
-		double distance1 = dmE.distance(v2, v3);
-		double distance2 = dmE.distance(v2, v4);
-		System.out.println("d1=" + distance1 + ", d2=" + distance2);
-
-		MahalanobisDistanceMeasure dmM = new MahalanobisDistanceMeasure();
-		dmM.setInverseCovarianceMatrix(matrix);
-		distance1 = dmM.distance(v2, v3);
-		distance2 = dmM.distance(v2, v4);
-		System.out.println("d1=" + distance1 + ", d2=" + distance2);
+	public static void mahanalobisDistance(Point from[], Point[] to){
+		int size = (from.length>to.length) ? from.length : to.length;
 		
-		return distance;
-		/*
-		LinkedList<Vector> v_list = new LinkedList<>();
+		double x[], y[], x1[], y1[];
 		
-		for(Point p : to){
-			Vector v = new RandomAccessSparseVector(2);
-			double[] point = new double[2];
-			point[0] = p.getX();
-			point[1] = p.getY();
-			
-			v.assign(point);
-			
-			
+		x = new double[from.length];
+		y = new double[from.length];
+		
+		x1 = new double[to.length];
+		y1 = new double[to.length];
+		
+		int index=0;
+		for(Point p : from){
+			x[index] = p.getX();
+			y[index] = p.getY();
 		}
-			
-			
-		Vector v1 = new RandomAccessSparseVector();
-		Matrix matrix = new SparseMatrix();
-		*/
 		
+		index=0;
+		for(Point p : to){
+			x1[index] = p.getX();
+			y1[index] = p.getY();
+		}
 		
+		//Mahalanobis m = new Mahalanobis(size);
+		//m.getDistance(x, x1);
+		
+		//1. średnia dla wektorów
+		//2. odejmuję wartości średnie od każdego elementu wektoru
+		//3. liczę kowariancję dla 2 grup (mnożę macierz i jej transpozycję)
+		//4. dzielę wartości kowariancji przez liczbę elementów w wektorze
+		//5. łączę macierze kowariancji licząc średnie ważone
+		//6. Obliczam odwrotność macierzy kowariancjii
 	}
 	
 	

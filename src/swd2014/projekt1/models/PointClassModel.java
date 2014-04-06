@@ -1,22 +1,22 @@
 package swd2014.projekt1.models;
 
-public class ClassModel  implements Comparable<ClassModel> {
+public class PointClassModel  implements Comparable<PointClassModel> {
 	private Point point;
-	private int n_class;
+	private String class_name;
 	private double distance;
 	
-	public ClassModel(){
+	public PointClassModel(){
 		
 	}
 	
-	public ClassModel(int n_class, double distance){
-		this.n_class = n_class;
+	public PointClassModel(String n_class, double distance){
+		this.class_name = n_class;
 		this.distance = distance;
 	}
 	
-	public ClassModel(double x, double y, int n_class ){
+	public PointClassModel(double x, double y, String n_class ){
 		point = new Point(x, y);
-		this.n_class = n_class;
+		this.class_name = n_class;
 	}
 	
 	public Point getPoint() {
@@ -25,11 +25,11 @@ public class ClassModel  implements Comparable<ClassModel> {
 	public void setPoint(Point point) {
 		this.point = point;
 	}
-	public int getN_class() {
-		return n_class;
+	public String getN_class() {
+		return class_name;
 	}
-	public void setN_class(int n_class) {
-		this.n_class = n_class;
+	public void setN_class(String n_class) {
+		this.class_name = n_class;
 	}
 
 	public double getDistance() {
@@ -41,7 +41,7 @@ public class ClassModel  implements Comparable<ClassModel> {
 	}
 
 	@Override
-	public int compareTo(ClassModel cm) {
+	public int compareTo(PointClassModel cm) {
 		double compareDist = cm.getDistance();
 		if(this.distance> compareDist)
 			return 1;
@@ -53,7 +53,7 @@ public class ClassModel  implements Comparable<ClassModel> {
 	
 	@Override
 	public String toString(){
-		return distance+" class: " + n_class;
+		return distance+" class: " + class_name;
 	}
 
 }
