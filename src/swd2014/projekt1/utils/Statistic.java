@@ -1,5 +1,11 @@
 package swd2014.projekt1.utils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.ListIterator;
+
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
@@ -9,7 +15,9 @@ import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.SparseMatrix;
 import org.apache.mahout.math.Vector;
 
+import swd2014.projekt1.models.Neighborns;
 import swd2014.projekt1.models.Point;
+import swd2014.projekt1.models.PointClassModel;
 
 
 public class Statistic {
@@ -236,5 +244,96 @@ public class Statistic {
 	}
 	
 	
+	public static String[] knn(LinkedList<Point> input_data, LinkedList<PointClassModel> class_data, int selected_method, int n_neighbors){
+		String[] output_classes = new String[input_data.size()];	
+		LinkedList<Neighborns> neighborns = knn_neighbors(input_data, class_data, selected_method, n_neighbors);
+		int index = 0;
+		for(Neighborns n : neighborns){
+           	String[] el_classes = new String[n.getDistances().size()];
+			int i =0;
+			for(PointClassModel cm : n.getDistances())
+				el_classes[i++] = cm.getN_class();
+			
+			output_classes[index] = Utils.mostFrequent(el_classes);
+		}
+		return output_classes;
+	}
+	
+	public static LinkedList<Neighborns> knn_neighbors(LinkedList<Point> input_data, LinkedList<PointClassModel> class_data, int selected_method, int n_neighbors){
+		Class<?> cls = null;
+		try {
+			cls = Class.forName("swd2014.projekt1.utils.Statistic");
+		} catch (ClassNotFoundException e1) {e1.printStackTrace();}
+		
+		Method metric_method = null;
+		Class[] paramPoint = new Class[]{Point.class, Point.class};
+		
+		try {
+			switch (selected_method) {
+			case 0:// "odległość euklidesowa"
+				metric_method = cls.getDeclaredMethod("euclideanDistance", paramPoint);
+				break;
+				
+			case 1://"metryka manhattan"
+				metric_method = cls.getDeclaredMethod("manhattanDistance", paramPoint);
+				break;		
+				
+			case 2://"metryka nieskończoność"
+				metric_method = cls.getDeclaredMethod("metrykaNieskonczonosc",paramPoint);
+				break;	
+			case 3:
+				metric_method = cls.getDeclaredMethod("mahanalobisDistance", paramPoint);
+				break;
+			}
+		} catch( NoSuchMethodError | NoSuchMethodException e){	e.printStackTrace();}
+		
+		LinkedList<Neighborns> neighborns = new LinkedList<>();
+		for(Point from : input_data){
+			LinkedList<PointClassModel> tempDist = new LinkedList<>();
+			
+			for(PointClassModel to : class_data){
+				double dist = 0;
+				try {
+					dist = (double) metric_method.invoke(null, from, to.getPoint());
+				} catch (IllegalAccessException	| IllegalArgumentException| InvocationTargetException e) {	e.printStackTrace();}
+				PointClassModel cm = new PointClassModel(to.getN_class(), dist);
+				cm.setPoint(from);
+				tempDist.add(cm);
+			}
+			
+			Collections.sort(tempDist);
+			ListIterator iter = tempDist.listIterator();
+			
+			LinkedList<PointClassModel> closest_neighborns = new LinkedList<>();
+			
+			for(int i = 0; i<n_neighbors; i++){
+				if(iter.hasNext())
+					closest_neighborns.add((PointClassModel) iter.next());
+			}
+			
+			Neighborns nghbrns = new Neighborns(from, closest_neighborns);
+			neighborns.add(nghbrns);
+		}
+		return neighborns;
+	}
 
+	public static String[] leave_one_out(double [] data_x, double[] data_y, String[] class_data, int selected_method, int n_neighbors){
+				String[] classes = new String[data_x.length];
+				
+
+				for(int ex_i =0; ex_i<data_x.length;ex_i++){
+					LinkedList<PointClassModel> ex_class_data = new LinkedList<>();
+					
+					for(int i =0; i<data_x.length ; i++){
+						if(i != ex_i)
+							ex_class_data.add(new PointClassModel(data_x[i], data_y[i], class_data[i]));
+					}
+					
+					LinkedList<Point> input_data = new LinkedList<>();
+					input_data.add(new Point(data_x[ex_i], data_y[ex_i]));
+					
+					classes[ex_i] = knn(input_data, ex_class_data, selected_method, n_neighbors)[0];
+				}
+				return classes;
+	}
 }

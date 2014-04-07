@@ -179,7 +179,7 @@ public class Utils {
 
 	}
 	
-	public static void saveMatrixToFile(Matrix m, File file, String comment){
+	public static void saveMatrixToFile(Matrix m, File file, String comment, String delimeter){
 		
 		String[] columnnames = m.getColumnNames();
 		String[][] matrix_data = m.getMatrix();
@@ -194,14 +194,14 @@ public class Utils {
 		}
 
 		for(String colname : columnnames){
-			content+=colname+",";
+			content+=colname+delimeter;
 		}
 		
 		content+="\n";
 		
 		for(String[] row : matrix_data){
 			for(String attr : row)
-				content+=attr+",";
+				content+=attr+delimeter;
 			content+="\n";
 		}
 		
@@ -221,9 +221,9 @@ public class Utils {
 	}
 
 	public static double[] changeInterval(double[] data, double min, double max){
-		double d_max=data[0];
+		double d_max=data[0];	
 		double d_min=data[0];
-		double [] out = new double[data.length];
+		double [] out = new double[data.length];	
 		
 		for(double d : data){
 			if(d_max<d)

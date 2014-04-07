@@ -49,18 +49,22 @@ public class CsvFileReader {
 		boolean remove_white_spaces, first_row_have_columnames;
 
 		delimeter = settings.getDelimeter();
-		remove_white_spaces = settings.isRemove_white_spaces();
+		if(delimeter.equals("\t") || delimeter.equals(" "))
+			remove_white_spaces = false;
+		else
+			remove_white_spaces = settings.isRemove_white_spaces();
 		first_row_have_columnames = settings.isFirstRowHasColumnNames();
 
 		File f = new File(path_to_file);
 		if (!f.exists())
 			return null;
-		Scanner scanner = null;
-		try {
+		Scanner scanner = null;	
+		try {	
 			scanner = new Scanner(f);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		
 		String[] columnnames = null;
 
 		if (first_row_have_columnames) {
@@ -69,15 +73,16 @@ public class CsvFileReader {
 				line = scanner.nextLine();
 			} while (line.startsWith("#"));
 
-			line = line.replaceAll("\\s", "");
+			if(remove_white_spaces)
+				line = line.replaceAll("\\s", "");
 			columnnames= line.split(delimeter);
 			for (String columnname : columnnames) {
 				this.columNames.add(columnname);
 			}
-		}
+		}	
 
 		if (remove_white_spaces)
-			while (scanner.hasNextLine()) {
+			while (scanner.hasNextLine()) {	
 				String line = scanner.nextLine();
 				if (!line.startsWith("#")) {
 					line = line.replaceAll("\\s", "");
@@ -86,6 +91,20 @@ public class CsvFileReader {
 				}
 			}
 		else
+			do{
+				String line = scanner.nextLine();
+				if (!line.startsWith("#")) {	
+					String[] row = line.split(delimeter);
+					int i=0;
+					for(String r : row){
+						row[i++] = r.replaceAll(",", ".");
+					}
+
+					rows.add(row);
+				}
+			}while(scanner.hasNextLine());
+		
+		/*
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine();
 				if (!line.startsWith("#")) {
@@ -93,9 +112,9 @@ public class CsvFileReader {
 					rows.add(row);
 				}
 			}
-
-		scanner.close();
-
+		*/
+		scanner.close();	
+		
 		int column_count, row_count;
 		row_count = rows.size();
 		
@@ -117,6 +136,8 @@ public class CsvFileReader {
 			matrix.data[r] = rows.get(r);
 
 		}
+		
+		
 
 		return matrix.data;
 	}
