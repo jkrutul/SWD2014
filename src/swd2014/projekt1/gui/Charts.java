@@ -17,6 +17,8 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import swd2014.projekt1.models.DataAndClass;
+
 public class Charts {
 	public static void chartXY(XYSeriesCollection dataset){
 		JFreeChart chart = ChartFactory.createXYAreaChart("XY Chart",
@@ -68,6 +70,22 @@ public class Charts {
 		
 	}
 	
+	
+	public static XYDataset createXYDataset(double x[], double y[],String title){
+
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		XYSeries series1 = new XYSeries(title);
+		
+		for(int i=0; i<x.length; i++){
+			series1.add(x[i], y[i]);
+		}	
+		dataset.addSeries(series1);
+
+		
+		return dataset;
+		
+	}
+	
 	public static XYDataset createDataset(double s1[], double s2[]){
 
 		XYSeriesCollection dataset = new XYSeriesCollection();
@@ -110,14 +128,14 @@ public class Charts {
 		
 	}
 	
-	public static XYDataset createDataset(double[][] x_series, double[][] y_series){
+	public static XYDataset createDataset(double[][] x_series, double[][] y_series, String[] class_names){
 
 		XYSeriesCollection dataset = new XYSeriesCollection();
 		for(int i=0; i<x_series.length; i++){
 			double[] x_items = x_series[i];
 			double[] y_items = y_series[i];
 			
-			XYSeries ser = new XYSeries("klasa"+i);
+			XYSeries ser = new XYSeries(class_names[i]);
 			for(int j=0; j<x_items.length; j++){
 				ser.add(x_items[j], y_items[j]);
 			}
@@ -129,6 +147,8 @@ public class Charts {
 		
 	}
 	
+	
+
 
 	
 	

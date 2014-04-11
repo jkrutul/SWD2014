@@ -5,11 +5,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.ListIterator;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -35,6 +31,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import swd2014.projekt1.csv.CsvFileReader;
@@ -80,7 +77,7 @@ public class ApplicationWindow extends JFrame {
 	private static javax.swing.JComboBox zComboBox;
     
     private JMenu group_menu, file_menu, disp_menu, stat_menu;
-    private JMenuItem pref_class_mi, save_toFile_mi, close_mi, open_file_mi, mDispl_mi, knn_mi, discretization_mi, interval_mi;
+    private JMenuItem pref_class_mi, save_toFile_mi, close_mi, open_file_mi, mDispl_mi, knn_mi, discretization_mi, interval_mi, mDisplayColumn_mi;
 
 	static TableGUI tg;
     
@@ -210,6 +207,17 @@ public class ApplicationWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				DataPrinting.printMatrix(m, consolTextArea);
+			}
+		});
+		
+		
+		mDisplayColumn_mi = new JMenuItem("Wypisz zawartość kolumny");
+		mDisplayColumn_mi.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 		
@@ -816,12 +824,10 @@ public class ApplicationWindow extends JFrame {
 	public static void drawChart(int x_column, int y_column, int groupBy ){
 		double[] x_data =  Converts.convertToDouble(m.getColumn(x_column));
 		double[] y_data =  Converts.convertToDouble(m.getColumn(y_column));
-		String[] group_data =  m.getColumn(groupBy);
+		String[] class_data =  m.getColumn(groupBy);
 		
-		int [] class_array = DataSplit.classNumberAttribution(group_data, 1000);
-		
-		double[][] x_grouped = DataSplit.splitDataByClasses(x_data, class_array);
-		double[][] y_grouped = DataSplit.splitDataByClasses(y_data, class_array);
+		double[][] x_grouped = DataSplit.splitDataByClasses(x_data, class_data);
+		double[][] y_grouped = DataSplit.splitDataByClasses(y_data, class_data);
 		
 		
 		String[] col_names = m.getColumnNames();
@@ -833,7 +839,7 @@ public class ApplicationWindow extends JFrame {
 			
 		}
 		
-		Charts.chartScatterPlot((XYSeriesCollection) Charts.createDataset(x_grouped, y_grouped), x_title, y_title, title);
+		Charts.chartScatterPlot((XYSeriesCollection) Charts.createDataset(x_grouped, y_grouped, DataSplit.keys), x_title, y_title, title);
 		
 		
 	}
@@ -1220,28 +1226,41 @@ public class ApplicationWindow extends JFrame {
 	            	int y_col = cb_y_select.getSelectedIndex();
 	            	int class_col = cb_decision_class.getSelectedIndex();
 					int selected_method=knn_method_cb.getSelectedIndex();
-					int n_neighbors = Integer.parseInt(tv_elements.getText());
+					//int n_neighbors = Integer.parseInt(tv_elements.getText());
 					
 					String[] classes_array = m.getColumn(class_col);
 	            	double[] data_x = Converts.convertToDouble(m.getColumn(x_col));
 	            	double[] data_y = Converts.convertToDouble(m.getColumn(y_col));
 
-	            	String[] knn_classes = Statistic.leave_one_out(data_x, data_y, classes_array, selected_method, n_neighbors);
+	            	double[] correct_guesses = new double[data_x.length-1];
+	            	int[] N_neighbors = new int[data_x.length-1];
 	            	
-	            	int index = 0;
-	            	double correct_match=0;
-	            	for(String knn_c : knn_classes){
-	            		String test_class = classes_array[index++];
-	            		if(test_class.equals(knn_c))
-	            			correct_match++;
-	            		classesTextArea.append("KLASA: " +test_class+" knn: "+knn_c+"\n");
+	            	for(int n_neighbors = 1 ; n_neighbors<classes_array.length; n_neighbors++){
+		            	String[] knn_classes = Statistic.leave_one_out(data_x, data_y, classes_array, selected_method, n_neighbors);
+		            	
+		            	int index = 0;
+		            	double correct_match=0;
+		            	for(String knn_c : knn_classes){
+		            		String test_class = classes_array[index++];
+		            		if(test_class.equals(knn_c))
+		            			correct_match++;
+		            		//classesTextArea.append("KLASA: " +test_class+" knn: "+knn_c+"\n");
+		            	}
+		            	int n=classes_array.length;
+		            	correct_match/=n;
+		            	correct_match*=100;
+		            	//classesTextArea.append("n= "+n_neighbors+" l.elementów="+classes_array.length+" poprawnie odgadnięto="+correct_match+"%\n" );
+		            	classesTextArea.append(n_neighbors+","+correct_match+"\n" );
+		            	
+		            	int tab_i = n_neighbors;
+		            	tab_i-=1;
+		            	correct_guesses[tab_i] =correct_match;
+		            	N_neighbors[tab_i] = n_neighbors;
 	            	}
-	            	int n=classes_array.length;
-	            	correct_match/=n;
-	            	correct_match*=100;
-	            	classesTextArea.append("n= "+n_neighbors+" l.elementów="+classes_array.length+" poprawnie odgadnięto="+correct_match+"%" );
 	            	
-					
+	            	XYDataset xy_dataset = Charts.createXYDataset(Converts.convertToDouble(Converts.convertToString(N_neighbors)), correct_guesses, Integer.toString(selected_method) );
+	            	Charts.chartScatterPlot((XYSeriesCollection) xy_dataset, "liczba sąsiadów", "% odgadniętych poprawnie klas", "zależność jakości klasyfikatora mierzonej metodą leave-one-out od ilości sąsiadów");
+	            	
 				}
 			});
 	        

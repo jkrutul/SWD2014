@@ -13,24 +13,24 @@ import org.apache.hadoop.hbase.util.Hash;
 import swd2014.projekt1.models.DataAndClass;
 
 public class DataSplit {
-	
+	public static String keys[];
 	private static LinkedList<DataAndClass> dataAndClass = new LinkedList<>();
 	
 	
 	/* Funkcja rozdziela do tablic według podanych klas
 	 * 
 	 */
-	public static double[][] splitDataByClasses(double data[], int class_array[]){
+	public static double[][] splitDataByClasses(double data[], String class_array[]){
 		if(data.length != class_array.length){
 			System.out.println("DATA SIZE:" +data.length + " CLASS: "+class_array.length);
 			return null;
 		}
 			
 		// zliczam ile jest klas i ile każda ma elementów
-		LinkedHashMap<Integer, Integer> class_group = new LinkedHashMap<>();
+		LinkedHashMap<String, Integer> class_group = new LinkedHashMap<>();
 		//LinkedList<double[]> split_list = new LinkedList<>();
 		
-		for(int c : class_array)
+		for(String c : class_array)
 			if(class_group.containsKey(c)){
 				int v = class_group.get(c);
 				class_group.put(c, ++v);
@@ -40,14 +40,15 @@ public class DataSplit {
 		
 		
 		int class_count = class_group.size();
-		Integer [] keys = class_group.keySet().toArray(new Integer[class_count]);
+		//String [] keys = class_group.keySet().toArray(new String[class_count]);
+	    keys = class_group.keySet().toArray(new String[class_count]);
 		LinkedList<LinkedList<Double>> ll = new LinkedList<>();
 		
-		for(Integer k : keys){
+		for(String k : keys){
 			LinkedList<Double> ld = new LinkedList<>();
 			int index = 0;
-			for( int kca : class_array){
-				if(k.intValue() == kca ){
+			for( String kca : class_array){
+				if(k.equals(kca) ){
 					ld.add(data[index]);
 				}
 				index++;
