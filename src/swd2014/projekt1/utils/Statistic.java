@@ -3,8 +3,12 @@ package swd2014.projekt1.utils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.stat.StatUtils;
@@ -15,13 +19,126 @@ import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.SparseMatrix;
 import org.apache.mahout.math.Vector;
 
-import swd2014.projekt1.models.Neighborns;
+import swd2014.projekt1.models.NearestNeighbor;
+import swd2014.projekt1.models.Neighbors;
 import swd2014.projekt1.models.Point;
 import swd2014.projekt1.models.PointClassModel;
 
 
 public class Statistic {
 	
+	public static List<NearestNeighbor> k_mean(List<Point> input_data, int k){
+		if(input_data.size()<=0){
+			return null;
+		}
+		
+		double initX = input_data.get(0).getX();
+		double initY = input_data.get(0).getY();
+		
+		//sprawdzam przedział
+		double minX = initX, maxX = initX, minY = initY, maxY = initY;
+		
+		for(Point p : input_data){
+			double px= p.getX(), py = p.getY();
+			if(px < minX){
+				minX = px;
+			}
+			if(px > maxX){
+				maxX = px;
+			}
+			if(py < minY){
+				minY = py;
+			}
+			if(py > maxY){
+				maxY = py;
+			}
+		}
+		
+		// generuję losowe punkty
+		List<Point> random_points = new LinkedList<Point>();
+		List<Double> randDX = Utils.generateRandom(minX, maxX, k);
+		List<Double> randDY = Utils.generateRandom(minY, maxY, k);	
+		
+		for(int i=0; i<k; i++){
+			Point p = new Point(randDX.get(i), randDY.get(i));
+			random_points.add(p);
+		}
+		//----------------------------
+		
+		// ustalam najbliższych sąsiadów dla każdego punktu
+		List<NearestNeighbor> nnList = new LinkedList<NearestNeighbor>();
+		for(Point p : input_data){
+			NearestNeighbor nn = new NearestNeighbor(p);
+			int nClass = 0;
+			for(Point rnd : random_points){
+				if(nn.getNearestNeighbor() == null){
+					nn.setNearestNeighbor(rnd);
+					nn.setnClass(nClass);
+				}else{
+					Point exNn= nn.getNearestNeighbor();
+					if(euclideanDistance(nn.getPoint(), exNn) > euclideanDistance(nn.getPoint(), rnd)){
+						nn.setNearestNeighbor(rnd);
+						nn.setnClass(nClass);
+					}
+				}
+				nClass++;
+			}	
+			nnList.add(nn);
+		}
+		//-------------------------------------------------
+		boolean classChanged = false;
+		int iter = 0;
+		do{
+			// rozdzielam zbiór punktów na listy po klasach
+			Map<Integer, List<NearestNeighbor>> cnnMap = new LinkedHashMap<>();
+			for(NearestNeighbor nn : nnList){
+				int nClass = nn.getnClass();
+				List<NearestNeighbor> cList = cnnMap.get(nClass);
+				if(cList == null){
+					cList = new LinkedList<NearestNeighbor>();
+				}
+				cList.add(nn);
+				cnnMap.put(nClass, cList);
+			}
+			//---------------------------------------------
+			
+			//liczę średnie dla każdej klasy
+			Set<Integer> keyset = cnnMap.keySet();
+			Map<Integer, Point> meanPointForClass = new LinkedHashMap<>();
+			List<Point> meanPoints = new LinkedList<Point>();
+	
+			for(Integer key : keyset){
+				List<NearestNeighbor> cList = cnnMap.get(key);
+				List<Point> points = new LinkedList<Point>();
+				for(NearestNeighbor nn : cList){
+					points.add(nn.getPoint());
+				}
+				Point meanPoint = Utils.meanPoint(points);
+				meanPoints.add(meanPoint);
+				meanPointForClass.put(key, meanPoint);
+			}
+			//------------------------------
+	
+			for(NearestNeighbor nn : nnList){
+				int nClass=0;
+				nn.setNearestNeighbor(meanPoints.get(0));
+				for(Point mp : meanPoints){
+					if(euclideanDistance(nn.getPoint(), nn.getNearestNeighbor()) > euclideanDistance(nn.getPoint(), mp)){
+						if(nn.getnClass() != nClass){
+							nn.setnClass(nClass);
+							classChanged=true;
+						}
+					}
+					nClass++;
+				}
+			}
+			iter++;
+		
+		}while(classChanged && iter<=1000);
+		System.out.println(iter);
+		
+		return nnList;
+	}
 	
 	
 	/* Warto�� �rednia
@@ -246,9 +363,9 @@ public class Statistic {
 	
 	public static String[] knn(LinkedList<Point> input_data, LinkedList<PointClassModel> class_data, int selected_method, int n_neighbors){
 		String[] output_classes = new String[input_data.size()];	
-		LinkedList<Neighborns> neighborns = knn_neighbors(input_data, class_data, selected_method, n_neighbors);
+		LinkedList<Neighbors> neighborns = knn_neighbors(input_data, class_data, selected_method, n_neighbors);
 		int index = 0;
-		for(Neighborns n : neighborns){
+		for(Neighbors n : neighborns){
            	String[] el_classes = new String[n.getDistances().size()];
 			int i =0;
 			for(PointClassModel cm : n.getDistances())
@@ -259,7 +376,7 @@ public class Statistic {
 		return output_classes;
 	}
 	
-	public static LinkedList<Neighborns> knn_neighbors(LinkedList<Point> input_data, LinkedList<PointClassModel> class_data, int selected_method, int n_neighbors){
+	public static LinkedList<Neighbors> knn_neighbors(LinkedList<Point> input_data, LinkedList<PointClassModel> class_data, int selected_method, int n_neighbors){
 		Class<?> cls = null;
 		try {
 			cls = Class.forName("swd2014.projekt1.utils.Statistic");
@@ -287,7 +404,7 @@ public class Statistic {
 			}
 		} catch( NoSuchMethodError | NoSuchMethodException e){	e.printStackTrace();}
 		
-		LinkedList<Neighborns> neighborns = new LinkedList<>();
+		LinkedList<Neighbors> neighborns = new LinkedList<>();
 		for(Point from : input_data){
 			LinkedList<PointClassModel> tempDist = new LinkedList<>();
 			
@@ -311,7 +428,7 @@ public class Statistic {
 					closest_neighborns.add((PointClassModel) iter.next());
 			}
 			
-			Neighborns nghbrns = new Neighborns(from, closest_neighborns);
+			Neighbors nghbrns = new Neighbors(from, closest_neighborns);
 			neighborns.add(nghbrns);
 		}
 		return neighborns;

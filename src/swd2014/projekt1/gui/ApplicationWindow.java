@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -38,7 +39,8 @@ import swd2014.projekt1.csv.CsvFileReader;
 import swd2014.projekt1.csv.CsvReadWriteSettings;
 import swd2014.projekt1.models.DataAndClass;
 import swd2014.projekt1.models.Matrix;
-import swd2014.projekt1.models.Neighborns;
+import swd2014.projekt1.models.NearestNeighbor;
+import swd2014.projekt1.models.Neighbors;
 import swd2014.projekt1.models.Point;
 import swd2014.projekt1.models.PointClassModel;
 import swd2014.projekt1.utils.Converts;
@@ -1034,7 +1036,7 @@ public class ApplicationWindow extends JFrame {
 		}
 
 		public static void displayKnn(){
-		    JButton assign_classes, read_fromFileBtn, leave_one_out;
+		    JButton assign_classes, read_fromFileBtn, leave_one_out, k_mean;
 		    final JTextArea classesTextArea;
 			final JTextArea dataTxtArea;
 		    final JComboBox cb_x_select,cb_y_select,knn_method_cb, cb_decision_class;
@@ -1060,6 +1062,7 @@ public class ApplicationWindow extends JFrame {
 	        read_fromFileBtn = new javax.swing.JButton();
 	        jPanel3 = new javax.swing.JPanel();
 	        assign_classes = new javax.swing.JButton();
+	        k_mean = new JButton();
 	        leave_one_out = new JButton();
 	        jScrollPane2 = new javax.swing.JScrollPane();
 	        classesTextArea = new javax.swing.JTextArea();
@@ -1085,8 +1088,8 @@ public class ApplicationWindow extends JFrame {
 
 	        tv_elements.setText("3");
 
-	        jLabel4.setText("liczba sąsiadów:");
-
+	        jLabel4.setText("liczba sąsiadów/pukntów[k_median]:");
+	        
 	        cb_decision_class.setModel(new javax.swing.DefaultComboBoxModel(m.getColumnNames()));
 
 	        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -1174,6 +1177,7 @@ public class ApplicationWindow extends JFrame {
 
 	        assign_classes.setText("klasyfikuj");
 	        leave_one_out.setText("leave one out");
+	        k_mean.setText("k srednich");
 
 	        classesTextArea.setColumns(20);
 	        classesTextArea.setRows(5);
@@ -1186,7 +1190,8 @@ public class ApplicationWindow extends JFrame {
 	            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
 	                .addGap(0, 0, Short.MAX_VALUE)
 	                .addComponent(assign_classes)
-	                .addComponent(leave_one_out))
+	                .addComponent(leave_one_out)
+	                .addComponent(k_mean))
 	            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
 	        );
 	        jPanel3Layout.setVerticalGroup(
@@ -1194,6 +1199,7 @@ public class ApplicationWindow extends JFrame {
 	            .addGroup(jPanel3Layout.createSequentialGroup()
 	                .addComponent(assign_classes)
 	                .addComponent(leave_one_out)
+	                .addComponent(k_mean)
 	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 	                .addComponent(jScrollPane2))
 	        );
@@ -1218,6 +1224,46 @@ public class ApplicationWindow extends JFrame {
 	            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 	        );
 	        
+	        k_mean.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+	            	int x_col = cb_x_select.getSelectedIndex();
+	            	int y_col = cb_y_select.getSelectedIndex();
+					int k = Integer.parseInt(tv_elements.getText());
+	            	double[] data_x = Converts.convertToDouble(m.getColumn(x_col));
+	            	double[] data_y = Converts.convertToDouble(m.getColumn(y_col));
+	            	List<Point> points = new LinkedList<>();
+	            	
+	            	for(int i = 0; i<data_x.length; i++){
+	            		Point p = new Point(data_x[i], data_y[i]);
+	            		points.add(p);
+	            	}
+	            	
+	            	List<NearestNeighbor> nn = Statistic.k_mean(points, k);
+	            	
+	            	for(NearestNeighbor n : nn){
+	            		classesTextArea.append("Klasa "+ n.getnClass()+" punkt "+ n.getPoint()+"\n");
+	            	}
+	            	
+	            	double[] x_data = new double[nn.size()],y_data = new double[nn.size()];
+	            	String class_data[] = new String[nn.size()]; 
+	            	int i= 0;
+	            	for(NearestNeighbor n : nn){
+	            		Point p = n.getPoint();
+	            		x_data[i] = p.getX();
+	            		y_data[i] = p.getY();
+	            		class_data[i] = String.valueOf( n.getnClass() );
+	            		i++;
+	            	}
+        		
+	        		double[][] x_grouped = DataSplit.splitDataByClasses(x_data, class_data);
+	        		double[][] y_grouped = DataSplit.splitDataByClasses(y_data, class_data);
+	          		String x_title ="x", y_title="y", title="xy";		
+	        		Charts.chartScatterPlot((XYSeriesCollection) Charts.createDataset(x_grouped, y_grouped, DataSplit.keys), x_title, y_title, title);
+				}
+			});
+	        
 	        leave_one_out.addActionListener(new ActionListener() {
 				
 				@Override
@@ -1226,40 +1272,28 @@ public class ApplicationWindow extends JFrame {
 	            	int y_col = cb_y_select.getSelectedIndex();
 	            	int class_col = cb_decision_class.getSelectedIndex();
 					int selected_method=knn_method_cb.getSelectedIndex();
-					//int n_neighbors = Integer.parseInt(tv_elements.getText());
+					int n_neighbors = Integer.parseInt(tv_elements.getText());
 					
 					String[] classes_array = m.getColumn(class_col);
 	            	double[] data_x = Converts.convertToDouble(m.getColumn(x_col));
 	            	double[] data_y = Converts.convertToDouble(m.getColumn(y_col));
 
-	            	double[] correct_guesses = new double[data_x.length-1];
-	            	int[] N_neighbors = new int[data_x.length-1];
-	            	
-	            	for(int n_neighbors = 1 ; n_neighbors<classes_array.length; n_neighbors++){
-		            	String[] knn_classes = Statistic.leave_one_out(data_x, data_y, classes_array, selected_method, n_neighbors);
-		            	
-		            	int index = 0;
-		            	double correct_match=0;
-		            	for(String knn_c : knn_classes){
-		            		String test_class = classes_array[index++];
-		            		if(test_class.equals(knn_c))
-		            			correct_match++;
-		            		//classesTextArea.append("KLASA: " +test_class+" knn: "+knn_c+"\n");
-		            	}
-		            	int n=classes_array.length;
-		            	correct_match/=n;
-		            	correct_match*=100;
-		            	//classesTextArea.append("n= "+n_neighbors+" l.elementów="+classes_array.length+" poprawnie odgadnięto="+correct_match+"%\n" );
-		            	classesTextArea.append(n_neighbors+","+correct_match+"\n" );
-		            	
-		            	int tab_i = n_neighbors;
-		            	tab_i-=1;
-		            	correct_guesses[tab_i] =correct_match;
-		            	N_neighbors[tab_i] = n_neighbors;
+
+
+	            	String[] knn_classes = Statistic.leave_one_out(data_x, data_y, classes_array, selected_method, n_neighbors);
+	            	int index = 0;
+	            	double correct_match=0;
+	            	for(String knn_c : knn_classes){
+	            		String test_class = classes_array[index++];
+	            		if(test_class.equals(knn_c))
+	            			correct_match++;
+	            		classesTextArea.append("KLASA: " +test_class+" knn: "+knn_c+"\n");
 	            	}
-	            	
-	            	XYDataset xy_dataset = Charts.createXYDataset(Converts.convertToDouble(Converts.convertToString(N_neighbors)), correct_guesses, Integer.toString(selected_method) );
-	            	Charts.chartScatterPlot((XYSeriesCollection) xy_dataset, "liczba sąsiadów", "% odgadniętych poprawnie klas", "zależność jakości klasyfikatora mierzonej metodą leave-one-out od ilości sąsiadów");
+
+	            	int n=classes_array.length;
+	            	correct_match/=n;
+	            	correct_match*=100;
+	            	classesTextArea.append("n= "+n_neighbors+" l.elementów="+classes_array.length+" poprawnie odgadnięto="+correct_match+"%" );
 	            	
 				}
 			});
@@ -1297,9 +1331,9 @@ public class ApplicationWindow extends JFrame {
 	            		input_data.add(p);
 	            	}
 	            	
-	            	LinkedList<Neighborns> neighborns= Statistic.knn_neighbors(input_data, class_data, selected_method, n_neighbors);
+	            	LinkedList<Neighbors> neighbors= Statistic.knn_neighbors(input_data, class_data, selected_method, n_neighbors);
 					
-					for(Neighborns n : neighborns){
+					for(Neighbors n : neighbors){
 		            	String[] el_classes = new String[n.getDistances().size()];
 		            	
 

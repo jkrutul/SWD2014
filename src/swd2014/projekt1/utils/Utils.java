@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -25,6 +26,23 @@ import swd2014.projekt1.models.Matrix;
 import swd2014.projekt1.models.Point;
 
 public class Utils {
+	
+	public static List<Double> generateRandom(double min, double max, int howMany){
+		List<Double> generatedNumbers = new LinkedList<>();
+		for(int i= 0; i<howMany ; i++)
+			generatedNumbers.add(min + Math.random()*((max - min)+1));
+		return generatedNumbers;
+	}
+
+	public static Point meanPoint(List<Point> points ){
+		double pxs=0, pys =0;
+		for(Point p : points){
+			pxs+=p.getX();
+			pys+=p.getY();			
+		}
+		return new Point(pxs/points.size(), pys/points.size());
+	}
+	
 	
 	/**
 	 *  Liczy ile linii jest w pliku tekstowym
